@@ -1,0 +1,6 @@
+<% layout('layout') %>
+<h2>Üzenetek</h2>
+<table border='1'><tr><th>ID</th><th>Név</th><th>Email</th><th>Üzenet</th><th>Idő</th></tr>
+<% messages.forEach(m => { %>
+<tr><td><%= m.id %></td><td><%= m.name %></td><td><%= m.email %></td><td><%= m.message %></td><td><%= new Date(m.created_at).toLocaleString() %></td></tr>
+<% }) %></table>

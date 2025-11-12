@@ -1,0 +1,8 @@
+<% layout('layout') %>
+<h2>Bejelentkezés</h2>
+<% if (error) { %><p style='color:red'><%= error %></p><% } %>
+<form method='post' action='/auth/login'>
+<label>Email</label><br><input name='email' required><br>
+<label>Jelszó</label><br><input name='password' type='password' required><br>
+<button type='submit'>Bejelentkezés</button>
+</form>

@@ -1,0 +1,39 @@
+-- SQL inicializáció az Opera Archívumhoz
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  email VARCHAR(150) UNIQUE,
+  password VARCHAR(255),
+  role VARCHAR(50) DEFAULT 'user',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS messages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(150),
+  email VARCHAR(150),
+  message TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS enekes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nev VARCHAR(200),
+  szulev INT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS mu (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  szerzo VARCHAR(200),
+  cim VARCHAR(300)
+);
+CREATE TABLE IF NOT EXISTS szerep (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  szerepnev VARCHAR(300),
+  muid INT,
+  hang VARCHAR(100)
+);
+CREATE TABLE IF NOT EXISTS repertoar (
+  enekesid INT,
+  szerepid INT,
+  utoljara INT,
+  PRIMARY KEY (enekesid, szerepid)
+);

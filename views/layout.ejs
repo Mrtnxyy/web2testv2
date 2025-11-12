@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Opera Archívum</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav>
+    <a href="/">Főoldal</a> |
+    <a href="/adatbazis">Adatbázis</a> |
+    <a href="/contact">Kapcsolat</a> |
+    <a href="/crud">Énekesek (CRUD)</a> |
+    <% if (!user) { %>
+      <a href="/auth/register">Regisztráció</a> |
+      <a href="/auth/login">Bejelentkezés</a>
+    <% } else { %>
+      <span>Üdv, <%= user.name %></span> |
+      <a href="/messages">Üzenetek</a> |
+      <% if (user.role === 'admin') { %>
+        <a href="/admin">Admin</a> |
+      <% } %>
+      <a href="/auth/logout">Kijelentkezés</a>
+    <% } %>
+  </nav>
+  <main><%- body %></main>
+</body>
+</html>

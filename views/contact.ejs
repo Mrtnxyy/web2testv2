@@ -1,0 +1,10 @@
+<% layout('layout') %>
+<h2>Kapcsolat</h2>
+<% if (success) { %><p style='color:green'><%= success %></p><% } %>
+<% if (error) { %><p style='color:red'><%= error %></p><% } %>
+<form method='post' action='/contact'>
+<label>Név</label><br><input name='name' required><br>
+<label>Email</label><br><input name='email' type='email' required><br>
+<label>Üzenet</label><br><textarea name='message' required></textarea><br>
+<button type='submit'>Küldés</button>
+</form>

@@ -1,0 +1,17 @@
+<% layout('layout') %>
+<h2>Adatbázis: Énekesek, Művek, Szerepek</h2>
+<h3>Énekesek</h3>
+<table border='1'><tr><th>ID</th><th>Név</th><th>Születési év</th></tr>
+<% enekes.forEach(e => { %>
+<tr><td><%= e.id %></td><td><%= e.nev %></td><td><%= e.szulev %></td></tr>
+<% }) %></table>
+<h3>Művek</h3>
+<table border='1'><tr><th>ID</th><th>Szerző</th><th>Cím</th></tr>
+<% mu.forEach(m => { %>
+<tr><td><%= m.id %></td><td><%= m.szerzo %></td><td><%= m.cim %></td></tr>
+<% }) %></table>
+<h3>Szerepek</h3>
+<table border='1'><tr><th>ID</th><th>Szerep</th><th>Mű ID</th><th>Hang</th></tr>
+<% szerep.forEach(s => { %>
+<tr><td><%= s.id %></td><td><%= s.szerepnev %></td><td><%= s.muid %></td><td><%= s.hang %></td></tr>
+<% }) %></table>
