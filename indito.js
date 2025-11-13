@@ -2,11 +2,15 @@
 
 // Modulok importálása
 const express = require('express');
-const expressLayouts = require('express-ejs-layouts'); // <-- Importálva
+const expressLayouts = require('express-ejs-layouts');
 const app = express();
 const dotenv = require('dotenv').config(); 
 const session = require('express-session');
-const indexRouter = require('./routes/index'); // Az útvonalakat tartalmazó fájl
+
+// Útvonal fájlok importálása
+const indexRouter = require('./routes/index'); 
+const authRouter = require('./routes/auth');   // <-- Új: Auth útvonal
+const crudRouter = require('./routes/crud');   // <-- Új: CRUD útvonal
 
 const PORT = process.env.PORT || 10000;
 
@@ -27,27 +31,26 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // 2. KRITIKUS JAVÍTÁS: user változó beállítása
-// Ezt a session beállítása után kell futtatni, hogy a req.session.user elérhető legyen.
 app.use((req, res, next) => {
-    // A req.session.user változót teszi elérhetővé a nézetek számára 'user' néven.
-    // Ez oldja meg a 'user is not defined' hibát a layout.ejs-ben.
     res.locals.user = req.session.user; 
     next();
 });
 
 
 // 3. Express Layouts beállítása
-app.use(expressLayouts); // <-- KRITIKUS: Aktiválva
+app.use(expressLayouts);
 
 // 4. EJS beállítása mint nézetmotor
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views'); 
 
 // Alapértelmezett layout beállítása
-app.set('layout', 'layout'); // <-- views/layout.ejs használata
+app.set('layout', 'layout'); 
 
 // ÚTVONALAK (ROUTES) BEÁLLÍTÁSA
 app.use('/', indexRouter);
+app.use('/auth', authRouter); // <-- Új: /auth/* útvonalak aktiválása
+app.use('/crud', crudRouter); // <-- Új: /crud/* útvonalak aktiválása
 
 
 // SZERVER INDÍTÁSA
