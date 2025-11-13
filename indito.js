@@ -6,20 +6,24 @@ const expressLayouts = require('express-ejs-layouts');
 const app = express();
 const dotenv = require('dotenv').config(); 
 const session = require('express-session');
+const mongoose = require('mongoose'); // <-- Mongoose hozzáadva
 
 // Útvonal fájlok importálása
 const indexRouter = require('./routes/index'); 
-const authRouter = require('./routes/auth');   // <-- Új: Auth útvonal
-const crudRouter = require('./routes/crud');   // <-- Új: CRUD útvonal
+const authRouter = require('./routes/auth');
+const crudRouter = require('./routes/crud'); 
 
 const PORT = process.env.PORT || 10000;
 
-// KÖZTES SZOFTVER (MIDDLEWARE) BEÁLLÍTÁSOK
+// ADATBÁZIS CSATLAKOZÁS (MongoDB)
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('MongoDB Csatlakozás sikeres!'))
+    .catch(err => console.error('MongoDB Csatlakozási hiba:', err));
 
-// Statikus fájlok (CSS, JS) mappájának beállítása
+// KÖZTES SZOFTVER (MIDDLEWARE) BEÁLLÍTÁSOK
 app.use(express.static('public'));
 
-// 1. Session beállítások
+// Session beállítások
 app.use(session({
     secret: process.env.SESSION_SECRET || 'valami_titkos',
     resave: false,
@@ -30,27 +34,26 @@ app.use(session({
 app.use(express.urlencoded({ extended: true }));
 
 
-// 2. KRITIKUS JAVÍTÁS: user változó beállítása
+// KRITIKUS JAVÍTÁS: user változó beállítása
 app.use((req, res, next) => {
     res.locals.user = req.session.user; 
     next();
 });
 
 
-// 3. Express Layouts beállítása
+// Express Layouts beállítása
 app.use(expressLayouts);
 
-// 4. EJS beállítása mint nézetmotor
+// EJS beállítása mint nézetmotor
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views'); 
-
-// Alapértelmezett layout beállítása
 app.set('layout', 'layout'); 
+
 
 // ÚTVONALAK (ROUTES) BEÁLLÍTÁSA
 app.use('/', indexRouter);
-app.use('/auth', authRouter); // <-- Új: /auth/* útvonalak aktiválása
-app.use('/crud', crudRouter); // <-- Új: /crud/* útvonalak aktiválása
+app.use('/auth', authRouter);
+app.use('/crud', crudRouter);
 
 
 // SZERVER INDÍTÁSA
