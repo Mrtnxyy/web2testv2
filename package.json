@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "indito.js",
   "scripts": {
-    "start": "node indito.js"
+    "start": "node indito.js",
+    "seed": "node seed_db.js",
+    "admin": "node create_admin.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -14,6 +16,510 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.17.3",
     "method-override": "^3.0.0",
-    "mongoose": "^8.0.0"  <-- Új: Mongoose a MongoDB-hez
+    "mongoose": "^8.0.0"  <-- MySQL2 helyett Mongoose
   }
 }
+
+
+### `indito.js:{Fő Server és MongoDB Csatlakozás}:indito.js`
+```javascript
+// indito.js
+
+// Modulok importálása
+const express = require('express');
+const expressLayouts = require('express-ejs-layouts');
+const app = express();
+const dotenv = require('dotenv').config(); 
+const session = require('express-session');
+const mongoose = require('mongoose'); // <-- Mongoose a MongoDB-hez
+const path = require('path');
+const methodOverride = require('method-override');
+
+// Útvonal fájlok importálása
+const indexRouter = require('./routes/index'); 
+const authRouter = require('./routes/auth');
+const crudRouter = require('./routes/crud');
+const messagesRouter = require('./routes/messages');
+
+const PORT = process.env.PORT || 10000;
+
+// ADATBÁZIS CSATLAKOZÁS (MongoDB Atlas)
+// A MONGO_URI-t kell beállítani a Renderen!
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB Csatlakozás sikeres!'))
+    .catch(err => console.error('MongoDB Csatlakozási hiba:', err));
+
+// KÖZTES SZOFTVER (MIDDLEWARE) BEÁLLÍTÁSOK
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(methodOverride('_method')); // App.js-ből áthozva
+
+// Session beállítások
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'valami_titkos',
+    resave: false,
+    saveUninitialized: true,
+}));
+
+// Body-parser a POST adatok feldolgozásához
+app.use(express.urlencoded({ extended: true }));
+
+
+// user változó beállítása a nézetekhez (res.locals)
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null; 
+    next();
+});
+
+
+// Express Layouts beállítása
+app.use(expressLayouts);
+
+// EJS beállítása mint nézetmotor
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.set('layout', 'layout'); 
+
+
+// ÚTVONALAK (ROUTES) BEÁLLÍTÁSA
+app.use('/', indexRouter);
+app.use('/auth', authRouter);
+app.use('/crud', crudRouter);
+app.use('/messages', messagesRouter);
+
+
+// SZERVER INDÍTÁSA
+app.listen(PORT, () => {
+    console.log(`Alkalmazás fut: http://localhost:${PORT} (port ${PORT})`);
+});
+
+
+### 3. `config/db.js` (Eltávolítva)
+
+A régi **`config/db.js`** fájlban lévő MySQL kapcsolatkészítő kód már **felesleges** és hibát okoz. Ezt a fájlt **törölnöd kell**, vagy a tartalmát üresre kell cserélned.
+
+---
+
+## 2. 🧱 Mongoose Modellek (`models/` mappa)
+
+Hozd létre a `models` mappát, és másold be a következő 5 fájlt. Ezek a modellek teszik lehetővé, hogy a Node.js-en keresztül kezeljük a MongoDB-t.
+
+### `models/User.js`
+
+```javascript
+// models/User.js
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+    // Az 'id' mező a MongoDB-ben automatikusan létrejön (_id)
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, default: 'user' },
+    created_at: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('User', userSchema, 'users');
+
+
+### `models/Enekes.js`
+
+```javascript
+// models/Enekes.js
+const mongoose = require('mongoose');
+
+const enekesSchema = new mongoose.Schema({
+    // Az eredeti ID-t megtartjuk a seedeléshez és a kapcsolatokhoz
+    originalId: { type: Number, required: true, unique: true }, 
+    nev: { type: String, required: true },
+    szulev: { type: Number },
+    created_at: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('Enekes', enekesSchema, 'enekesek');
+
+
+### `models/Mu.js`
+
+```javascript
+// models/Mu.js
+const mongoose = require('mongoose');
+
+const muSchema = new mongoose.Schema({
+    originalId: { type: Number, required: true, unique: true },
+    szerzo: { type: String, required: true },
+    cim: { type: String, required: true }
+});
+
+module.exports = mongoose.model('Mu', muSchema, 'muvek');
+
+
+### `models/Szerep.js`
+
+```javascript
+// models/Szerep.js
+const mongoose = require('mongoose');
+
+const szerepSchema = new mongoose.Schema({
+    originalId: { type: Number, required: true, unique: true },
+    szerepnev: { type: String, required: true },
+    // Kapcsolat a Mu modellel az originalId-n keresztül
+    muid: { type: Number, required: true }, 
+    hang: { type: String }
+});
+
+module.exports = mongoose.model('Szerep', szerepSchema, 'szerepek');
+
+
+### `models/Repertoar.js`
+
+```javascript
+// models/Repertoar.js
+const mongoose = require('mongoose');
+
+const repertoarSchema = new mongoose.Schema({
+    // Kapcsolatok az originalId-k alapján
+    enekesid: { type: Number, required: true }, 
+    szerepid: { type: Number, required: true },
+    utoljara: { type: Number },
+});
+
+module.exports = mongoose.model('Repertoar', repertoarSchema, 'repertoar');
+
+
+---
+
+## 3. 💾 Logika és Szkriptek
+
+### `create_admin.js` (Admin Létrehozás)
+
+Átírva Mongoose-ra. Ez a szkript létrehoz egy admin felhasználót a `users` gyűjteményben.
+
+```javascript
+// create_admin.js
+const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+// Modellek importálása
+const User = require('./models/User');
+
+(async () => {
+  if (!process.env.MONGO_URI) {
+      console.error('MONGO_URI környezeti változó hiányzik!');
+      process.exit(1);
+  }
+
+  await mongoose.connect(process.env.MONGO_URI);
+  
+  try {
+    const name = 'Admin';
+    const email = process.argv[2] || 'admin@pelda.hu';
+    const password = process.argv[3] || 'admin123';
+    
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        console.log(`Admin user már létezik ezzel az email címmel: ${email}`);
+        process.exit(0);
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+    
+    // Mongoose: új felhasználó létrehozása
+    await User.create({
+        name: name,
+        email: email,
+        password: hash,
+        role: 'admin'
+    });
+    
+    console.log('Admin user létrehozva:', email, 'Jelszó:', password);
+    process.exit(0);
+
+  } catch (err) {
+    console.error('Hiba az admin user létrehozásakor:', err);
+    process.exit(1);
+  } finally {
+    mongoose.connection.close();
+  }
+})();
+
+
+### `seed_db.js` (Adatfeltöltő Script)
+
+Ez a szkript feltölti az összes TXT fájl tartalmát a MongoDB gyűjteményekbe.
+
+```javascript
+// seed_db.js
+const fs = require('fs');
+const path = require('path');
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+// Modellek importálása
+const Enekes = require('./models/Enekes');
+const Mu = require('./models/Mu');
+const Szerep = require('./models/Szerep');
+const Repertoar = require('./models/Repertoar');
+
+const dataFiles = [
+    { file: 'enekes.txt', model: Enekes, fields: ['id', 'nev', 'szulev'] },
+    { file: 'mu.txt', model: Mu, fields: ['id', 'szerzo', 'cim'] },
+    { file: 'szerep.txt', model: Szerep, fields: ['id', 'szerepnev', 'muid', 'hang'] },
+    { file: 'repertoar.txt', model: Repertoar, fields: ['enekesid', 'szerepid', 'utoljara'] }
+];
+
+async function parseFile(filePath, fields) {
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+    const lines = fileContent.trim().split('\n').slice(1); // Fejléc kihagyása
+    
+    return lines.map(line => {
+        const values = line.split(';').map(v => v.trim());
+        const doc = {};
+        fields.forEach((field, i) => {
+            let value = values[i];
+            if (field === 'id' || field === 'muid' || field === 'enekesid' || field === 'szerepid' || field === 'szulev' || field === 'utoljara') {
+                doc[field === 'id' ? 'originalId' : field] = parseInt(value) || 0;
+            } else {
+                doc[field] = value;
+            }
+        });
+        return doc;
+    });
+}
+
+async function seedDatabase() {
+    if (!process.env.MONGO_URI) {
+        console.error('MONGO_URI környezeti változó hiányzik!');
+        return;
+    }
+    
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('MongoDB Csatlakozás sikeres, kezdődik a feltöltés...');
+    
+    try {
+        for (const data of dataFiles) {
+            const filePath = path.join(__dirname, 'data', data.file);
+            
+            // Adatok betöltése TXT-ből
+            const documents = await parseFile(filePath, data.fields);
+            
+            // Gyűjtemény törlése az ismételt futtatás elkerülése végett
+            await data.model.deleteMany({}); 
+            
+            // Adatok beszúrása
+            const result = await data.model.insertMany(documents);
+            
+            console.log(`[Sikeres]: ${data.model.collection.collectionName} - ${result.length} dokumentum beszúrva.`);
+        }
+
+    } catch (error) {
+        console.error('Kritikus hiba a feltöltés során:', error.message);
+        console.error(error.stack);
+    } finally {
+        mongoose.connection.close();
+    }
+}
+
+seedDatabase();
+
+
+---
+
+## 4. 🖼️ Útvonalak (Mongoose Lekérdezések)
+
+Az útvonalak átírva Mongoose-ra a `mysql2` helyett.
+
+### `routes/crud.js`
+
+```javascript
+// routes/crud.js
+const express = require('express');
+const router = express.Router();
+const Enekes = require('../models/Enekes'); // <-- Mongoose modell
+const Mu = require('../models/Mu'); 
+const Szerep = require('../models/Szerep'); 
+const Repertoar = require('../models/Repertoar'); 
+const mongoose = require('mongoose');
+
+// Middleware: admin jogosultság ellenőrzése (feltételezve, hogy a User modellen van role mező)
+function ensureAdmin(req, res, next) {
+    if (req.session.user && req.session.user.role === 'admin') {
+        return next();
+    }
+    res.status(403).send('Hozzáférés megtagadva.');
+}
+
+// Énekesek listázása (CRUD főoldal)
+router.get('/', async (req, res) => {
+    try {
+        const enekesek = await Enekes.find().sort({ nev: 1 }).lean(); 
+        res.render('crud/enekes_list', { 
+            title: 'Énekesek (CRUD)', 
+            enekesek: enekesek,
+            messages: req.session.messages // feltételezve, hogy messages-t használ a flash üzenetekhez
+        });
+        req.session.messages = [];
+    } catch (error) {
+        console.error('Hiba az énekesek lekérdezésekor:', error);
+        res.render('error', { message: 'Adatbázis hiba történt a lekérdezéskor.' });
+    }
+});
+
+// Énekes szerkesztése űrlap
+router.get('/edit/:id', ensureAdmin, async (req, res) => {
+    try {
+        // A Mongoose ID (_id) használata
+        const enekes = await Enekes.findById(req.params.id).lean(); 
+        if (!enekes) {
+            return res.status(404).send('Énekes nem található');
+        }
+        res.render('crud/edit_enekes', { title: 'Énekes szerkesztése', enekes: enekes });
+    } catch (error) {
+        console.error('Hiba a szerkesztő űrlap betöltésekor:', error);
+        res.status(500).send('Hiba a szerkesztő űrlap betöltésekor.');
+    }
+});
+
+// Énekes frissítése
+router.post('/edit/:id', ensureAdmin, async (req, res) => {
+    const { nev, szulev } = req.body;
+    try {
+        await Enekes.findByIdAndUpdate(req.params.id, { nev, szulev: parseInt(szulev) });
+        req.session.messages = ['Énekes sikeresen frissítve!'];
+        res.redirect('/crud');
+    } catch (error) {
+        console.error('Hiba az énekes frissítésekor:', error);
+        res.render('crud/edit_enekes', { 
+            title: 'Énekes szerkesztése', 
+            enekes: { _id: req.params.id, nev, szulev },
+            error: 'Hiba történt a frissítés során.'
+        });
+    }
+});
+
+// Énekes törlése
+router.post('/delete/:id', ensureAdmin, async (req, res) => {
+    try {
+        await Enekes.findByIdAndDelete(req.params.id);
+        
+        // Eltávolítás a repertoárból az eredeti ID alapján (feltételezve, hogy a Mongoose ID-t használjuk a törléshez)
+        // Mivel a repertoárban originalId van, ez bonyolultabb. Egyszerűsítésként: 
+        // A Mongoose ID-t használva:
+        
+        // Ez a sor törli a dokumentumot a repertoár gyűjteményből is (mivel itt az originalId-k vannak):
+        const deletedEnekes = await Enekes.findById(req.params.id).select('originalId');
+        if(deletedEnekes) {
+            await Repertoar.deleteMany({ enekesid: deletedEnekes.originalId });
+        }
+        
+        req.session.messages = ['Énekes sikeresen törölve!'];
+        res.redirect('/crud');
+    } catch (error) {
+        console.error('Hiba az énekes törlésekor:', error);
+        req.session.messages = ['Hiba történt a törlés során.'];
+        res.redirect('/crud');
+    }
+});
+
+module.exports = router;
+
+
+### `routes/auth.js`
+
+```javascript
+// routes/auth.js
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcrypt');
+const User = require('../models/User'); // <-- Mongoose User modell importálása
+
+// Regisztrációs űrlap megjelenítése
+router.get('/register', (req, res) => {
+    res.render('auth/register', { error: null });
+});
+
+// Regisztráció kezelése
+router.post('/register', async (req, res) => {
+    const { name, email, password } = req.body;
+    
+    try {
+        // Mongoose: keresés
+        const existingUser = await User.findOne({ email: email });
+
+        if (existingUser) {
+            return res.render('auth/register', { error: 'Ez az e-mail cím már regisztrálva van.' });
+        }
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        // Mongoose: új felhasználó létrehozása
+        await User.create({
+            name: name,
+            email: email,
+            password: hashedPassword
+        });
+        
+        res.redirect('/auth/login');
+
+    } catch (error) {
+        console.error('Regisztrációs hiba:', error);
+        res.render('auth/register', { error: 'Hiba történt a regisztráció során.' });
+    }
+});
+
+// Bejelentkezési űrlap megjelenítése
+router.get('/login', (req, res) => {
+    res.render('auth/login', { error: null });
+});
+
+// Bejelentkezés kezelése
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Mongoose: felhasználó keresése
+        const user = await User.findOne({ email: email });
+
+        if (!user) {
+            return res.render('auth/login', { error: 'Hibás e-mail cím vagy jelszó.' });
+        }
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (passwordMatch) {
+            // MongoDB-ben az ID az _id mező
+            req.session.user = { id: user._id, name: user.name, role: user.role };
+            res.redirect('/');
+        } else {
+            res.render('auth/login', { error: 'Hibás e-mail cím vagy jelszó.' });
+        }
+
+    } catch (error) {
+        console.error('Bejelentkezési hiba:', error);
+        res.render('auth/login', { error: 'Hiba történt a bejelentkezés során.' });
+    }
+});
+
+// Kijelentkezés
+router.get('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return console.error('Hiba a kijelentkezéskor:', err);
+        }
+        res.redirect('/');
+    });
+});
+
+module.exports = router;
+
+
+---
+
+**A teendőd a következő:**
+
+1.  **Függőségek Frissítése:** Cseréld le a `package.json` tartalmát a fentire, és futtasd az `npm install mongoose` parancsot a helyi gépeden.
+2.  **Modellek Létrehozása:** Hozd létre a `models/` mappát, és másold bele az 5 Mongoose modellt.
+3.  **Kód Cseréje:** Cseréld ki az **`indito.js`**, **`create_admin.js`**, **`routes/crud.js`**, **`routes/auth.js`** fájlok tartalmát a fentiekre.
+4.  **Feltöltő Szkript:** Hozd létre a **`seed_db.js`** fájlt a gyökérben, és másold bele a szkriptet.
+5.  **Git Push:** Töltsd fel a teljes, módosított kódot a Git repódra.
+6.  **Adatbázis Feltöltése:** Futtasd a **`node seed_db.js`** parancsot a Renderen egy Job-on vagy Cron Job-on keresztül a feltöltéshez.
