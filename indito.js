@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 10000;
 // Statikus fájlok (CSS, JS) mappájának beállítása
 app.use(express.static('public'));
 
-// Session beállítások
+// 1. Session beállítások
 app.use(session({
     secret: process.env.SESSION_SECRET || 'valami_titkos',
     resave: false,
@@ -25,15 +25,26 @@ app.use(session({
 // Body-parser a POST adatok feldolgozásához
 app.use(express.urlencoded({ extended: true }));
 
-// Express Layouts beállítása
+
+// 2. KRITIKUS JAVÍTÁS: user változó beállítása
+// Ezt a session beállítása után kell futtatni, hogy a req.session.user elérhető legyen.
+app.use((req, res, next) => {
+    // A req.session.user változót teszi elérhetővé a nézetek számára 'user' néven.
+    // Ez oldja meg a 'user is not defined' hibát a layout.ejs-ben.
+    res.locals.user = req.session.user; 
+    next();
+});
+
+
+// 3. Express Layouts beállítása
 app.use(expressLayouts); // <-- KRITIKUS: Aktiválva
 
-// EJS beállítása mint nézetmotor
+// 4. EJS beállítása mint nézetmotor
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views'); 
 
 // Alapértelmezett layout beállítása
-app.set('layout', 'layout'); // <-- KRITIKUS: views/layout.ejs használata
+app.set('layout', 'layout'); // <-- views/layout.ejs használata
 
 // ÚTVONALAK (ROUTES) BEÁLLÍTÁSA
 app.use('/', indexRouter);
