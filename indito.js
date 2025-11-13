@@ -2,11 +2,11 @@
 
 // Modulok importálása
 const express = require('express');
-const expressLayouts = require('express-ejs-layouts'); // <-- Fontos: Importálva
+const expressLayouts = require('express-ejs-layouts'); // <-- Importálva
 const app = express();
 const dotenv = require('dotenv').config(); 
 const session = require('express-session');
-const indexRouter = require('./routes/index'); 
+const indexRouter = require('./routes/index'); // Az útvonalakat tartalmazó fájl
 
 const PORT = process.env.PORT || 10000;
 
@@ -32,9 +32,8 @@ app.use(expressLayouts); // <-- KRITIKUS: Aktiválva
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views'); 
 
-// Alapértelmezett layout beállítása:
-// Mivel a layout.ejs a views mappában van, a neve 'layout'
-app.set('layout', 'layout'); // <-- KRITIKUS: Beállítva
+// Alapértelmezett layout beállítása
+app.set('layout', 'layout'); // <-- KRITIKUS: views/layout.ejs használata
 
 // ÚTVONALAK (ROUTES) BEÁLLÍTÁSA
 app.use('/', indexRouter);
