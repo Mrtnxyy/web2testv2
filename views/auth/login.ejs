@@ -1,22 +1,19 @@
-<h2>Regisztráció</h2>
+<h2>Bejelentkezés</h2>
 
 <% if (error) { %>
     <p style='color:red'><%= error %></p>
 <% } %>
 
-<form method='post' action='/auth/register'>
-    <label for='name'>Név:</label><br>
-    <input type='text' id='name' name='name' required><br><br>
-
+<form method='post' action='/auth/login'>
     <label for='email'>E-mail:</label><br>
     <input type='email' id='email' name='email' required><br><br>
 
     <label for='password'>Jelszó:</label><br>
     <input type='password' id='password' name='password' required><br><br>
 
-    <button type='submit'>Regisztráció</button>
+    <button type='submit'>Bejelentkezés</button>
 </form>
 
 <p>
-    Már van fiókja? <a href="/auth/login">Jelentkezzen be.</a>
+    Még nincs fiókja? <a href="/auth/register">Regisztráljon itt.</a>
 </p>
