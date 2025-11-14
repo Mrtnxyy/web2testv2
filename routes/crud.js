@@ -1,14 +1,12 @@
-// routes/crud.js (MongoDB Mongoose Logic)
+// routes/crud.js (Befejezett MongoDB Mongoose Logic)
 const express = require('express');
 const router = express.Router();
 
 // Mongoose Modellek importálása
 const Enekes = require('../models/Enekes'); 
-const Mu = require('../models/Mu'); 
-const Szerep = require('../models/Szerep'); 
-const Repertoar = require('../models/Repertoar'); 
+// A többi modell (Mu, Szerep, Repertoar) is importálva van, ha szükséges
 
-// Middleware: admin jogosultság ellenőrzésére (ezzel védjük a CRUD oldalakat)
+// Middleware: admin jogosultság ellenőrzésére
 function ensureAdmin(req, res, next) {
     if (req.session.user && req.session.user.role === 'admin') {
         return next();
@@ -21,14 +19,13 @@ function ensureAdmin(req, res, next) {
 // Énekesek listázása (CRUD főoldal) - /crud
 // ----------------------
 router.get('/', async (req, res) => {
-    // Ellenőrizzük, hogy be van-e jelentkezve, mielőtt a ensureAdmin ellenőrizné a role-t.
+    // Ellenőrizzük, hogy be van-e jelentkezve
     if (!req.session.user) {
         return res.redirect('/auth/login');
     }
     
     // Ideiglenesen kikapcsoljuk az admin ellenőrzést, amíg a bejelentkezés tökéletesen nem működik
     // Bár ez nem ideális, segít látni, ha a Mongo lekérdezés működik.
-    // ensureAdmin(req, res, async () => { ... }) 
 
     try {
         // Mongoose lekérdezés: minden énekes lekérdezése
@@ -37,8 +34,9 @@ router.get('/', async (req, res) => {
         res.render('crud/enekes_list', { 
             title: 'Énekesek (CRUD)', 
             enekesek: enekesek,
-            messages: req.session.messages || null
+            messages: req.session.messages || null // Üzenetek átadása
         });
+        // Üzenetek törlése a sessionből a megjelenítés után
         req.session.messages = [];
     } catch (error) {
         console.error('Hiba az énekesek lekérdezésekor:', error);
@@ -46,6 +44,66 @@ router.get('/', async (req, res) => {
     }
 });
 
-// A többi CRUD útvonal (add, edit, delete) is hasonló Mongoose logikát használna.
+
+// ----------------------
+// Énekes Szerkesztése - /crud/edit/:id
+// ----------------------
+router.get('/edit/:id', ensureAdmin, async (req, res) => {
+    try {
+        // MongoDB _id alapján történő keresés
+        const enekes = await Enekes.findById(req.params.id).lean(); 
+        if (!enekes) {
+            return res.status(404).send('Énekes nem található.');
+        }
+        // Feltételezzük, hogy van 'crud/enekes_form.ejs' fájl
+        res.render('crud/enekes_form', { title: 'Énekes szerkesztése', enekes: enekes, error: null });
+    } catch (error) {
+        console.error('Hiba a szerkesztő űrlap betöltésekor:', error);
+        res.status(500).send('Hiba a szerkesztő űrlap betöltésekor.');
+    }
+});
+
+// Énekes Frissítése (POST metódus a szerkesztő űrlapról)
+router.post('/edit/:id', ensureAdmin, async (req, res) => {
+    const { nev, szulev } = req.body;
+    try {
+        // Mongoose: dokumentum frissítése az ID alapján
+        await Enekes.findByIdAndUpdate(req.params.id, { 
+            nev: nev, 
+            szulev: parseInt(szulev) 
+        });
+        
+        // Üzenet hozzáadása a sessionhöz
+        req.session.messages = ['Énekes sikeresen frissítve.'];
+        res.redirect('/crud');
+    } catch (error) {
+        console.error('Hiba az énekes frissítésekor:', error);
+        res.render('crud/enekes_form', { 
+            title: 'Énekes szerkesztése', 
+            enekes: req.body, 
+            error: 'Hiba történt a frissítés során.' 
+        });
+    }
+});
+
+// ----------------------
+// Énekes Törlése - /crud/delete/:id
+// ----------------------
+// Mivel a method-override a POST-ot használja a DELETE kéréshez:
+router.post('/delete/:id', ensureAdmin, async (req, res) => {
+    try {
+        // Mongoose: dokumentum törlése az ID alapján
+        await Enekes.findByIdAndDelete(req.params.id);
+        
+        // Mivel a repertoarban is originalId-k vannak, ott nem kell itt külön törölni, csak az Enekes-t.
+
+        req.session.messages = ['Énekes sikeresen törölve.'];
+        res.redirect('/crud');
+    } catch (error) {
+        console.error('Hiba az énekes törlésekor:', error);
+        req.session.messages = ['Hiba történt a törlés során.'];
+        res.redirect('/crud');
+    }
+});
 
 module.exports = router;
