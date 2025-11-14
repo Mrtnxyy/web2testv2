@@ -1,4 +1,3 @@
-// models/enekes.js
 const mongoose = require('mongoose');
 
 const enekesSchema = new mongoose.Schema({
