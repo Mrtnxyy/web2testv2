@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 // Mongoose Modellek importálása
-const Enekes = require('../models/enekes'); 
+const Enekes = require('../models/Enekes'); 
 const Mu = require('../models/mu'); 
 const Szerep = require('../models/szerep'); 
 const Repertoar = require('../models/repertoar'); 
