@@ -1,9 +1,9 @@
 /*
- * OPERA ARCHÍVUM EGYESÍTETT CSS (Vizuális Fix)
- * Fő változások: Középre igazítás és Fix Lábléc
+ * OPERA ARCHÍVUM EGYESÍTETT CSS (CRUD Vizuális Javítás)
+ * Cél: Táblázat fixálása, Szerkesztés gomb egységesítése, Üzenetdoboz fixálása
 */
 
-/* --- ALAP BEÁLLÍTÁSOK ÉS HÁTTÉR --- */
+/* --- ALAP BEÁLLÍTÁSOK --- */
 * {
   margin: 0;
   padding: 0;
@@ -14,9 +14,7 @@ body, html {
   font-family: 'Poppins', sans-serif;
   color: #fff; 
   line-height: 1.6;
-  /* Fontos: A lábléc fixálása miatt a body-nak is teljes magasságúnak kell lennie */
   min-height: 100vh;
-  /* Gradiens háttér */
   background: linear-gradient(135deg, #000000 15%, #7f00ff 50%, #000000 85%);
   background-attachment: fixed; 
 }
@@ -34,9 +32,8 @@ body, html {
   font-size: 1.8rem;
   font-weight: 700;
   letter-spacing: 2px;
-  /* OPERA CÍM FEHÉR SZÖVEG */
   color: #ffffff; 
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); 
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 .nav-links {
@@ -56,85 +53,103 @@ body, html {
   transition: color 0.3s ease;
 }
 
-.nav-links li a:hover {
-  color: #ffd8ec;
-}
+/* --- KÖZÉPSŐ KONTÉNER (A FŐ ELRENDEZÉS) --- */
 
-/* --- KÖZÉPSŐ KONTÉNER (Tartalom elrendezés) --- */
-
-/* Fő tartalom konténer: korlátozza a szélességet és középre igazítja az egész oldalt */
 .main-content-container {
-    max-width: 1000px;
-    margin: 0 auto; /* Középre igazítás */
+    max-width: 1000px; /* Szélesség fixálva */
+    margin: 0 auto; 
     padding: 20px; 
     padding-top: 40px; 
-    /* Helyet hagyunk a fix láblécnek az oldal alján */
-    padding-bottom: 70px; 
+    padding-bottom: 70px;
 }
 
-/* PIROSSAL BEKARIKÁZOTT SZÖVEG KÖZÉPRE IGAZÍTÁSA */
-
-/* Mivel a layout.ejs-ben az Opera Archívum h1/p tagok közvetlenül a <main> elemben vannak: */
-.main-content-container main h1 {
+h2 {
     text-align: center;
     font-size: 2.5rem;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     color: #ff3aeb;
+    margin: 0 auto 20px auto; 
 }
 
-.main-content-container main p {
-    text-align: center;
-    font-size: 1.1rem;
-    margin-bottom: 30px;
-    color: #ffffff; /* Fehér szöveg a kontraszthoz */
-    max-width: 700px; /* Szövegblokk maximális szélessége */
-    margin-left: auto; /* Középre igazítás */
-    margin-right: auto; /* Középre igazítás */
+/* --- ÚJ: MENTETT ÜZENET FIXÁLÁSA --- */
+
+.notification-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background-color: #000000; /* Fekete háttér */
+    color: #ffffff; /* Fehér szöveg */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(251, 0, 255, 0.5);
+    font-weight: 600;
+    z-index: 1000;
+    animation: fadeout 5s forwards; /* 5 másodperc után eltűnik */
 }
 
-/* --- TÁBLÁZATOK ÉS ŰRLAPOK (Középre Igazítás) --- */
+@keyframes fadeout {
+    0% { opacity: 1; transform: translateX(0); }
+    80% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(100%); }
+}
+
+/* --- TÁBLÁZATOK (CRUD LISTA) JAVÍTÁSA --- */
 
 table {
   width: 100%;
-  max-width: 1000px;
-  margin: 20px auto; /* Középre igazítja a táblázatot */
-  border-collapse: collapse;
-  background-color: rgba(64, 64, 64, 0.4); 
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  max-width: 900px;
+  margin: 20px auto;
+  border-collapse: separate; /* Hogy a border-spacing működjön */
+  border-spacing: 0 10px; /* Távolság a sorok között */
+  background-color: transparent; /* A háttér átlátszó, a sorok kapnak színt */
+  box-shadow: none; /* Árnyék eltávolítva */
 }
 
-form {
-  max-width: 400px;
-  margin: 20px auto; /* Középre igazítja az űrlapokat */
-  padding: 30px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  text-align: left;
-}
-
-/* --- LÁBLÉC (FIXÁLÁS A KÉPERNYŐ ALJÁRA) --- */
-footer {
-  text-align: center;
-  padding: 15px 20px;
-  background-color: #000000; /* Teljes fekete háttér */
+table th {
+  background-color: #7f00ff; 
+  font-weight: 600;
   color: #fff;
-  width: 100%;
-  /* FIXÁLÁS A KÉPERNYŐ ALJÁRA */
-  position: fixed; 
-  bottom: 0;
-  left: 0;
-  z-index: 100; /* Biztosítja, hogy felül legyen minden máson */
+  text-transform: uppercase;
+  padding: 12px 15px;
+  border: none; /* Keret eltávolítva */
 }
 
-/* --- EGYÉB STÍLUSOK (megtartva) --- */
+/* Törzs és Sorok Stílusa */
+table tbody tr {
+    background-color: rgba(64, 64, 64, 0.8); /* Minden sor sötét hátteret kap */
+    border-radius: 8px; /* Lekerekített sorok */
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+}
 
-.btn, button[type="submit"] {
+table tbody tr:hover {
+  background-color: rgba(90, 90, 90, 0.8); /* Kiemelés hoveren */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+table td {
+  padding: 12px 15px;
+  text-align: left;
+  border: none; /* Keretek eltávolítva */
+}
+
+/* Utolsó oszlop (Műveletek) beállítása */
+table td:last-child {
+    width: 250px; /* Helyet biztosítunk a gomboknak */
+    text-align: right;
+    display: flex; /* Gombok igazításához */
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* --- GOMBOK ÉS AKCIÓK (CRUD) --- */
+
+.btn, button[type="submit"], 
+.action-button { /* Új osztály a Szerkesztés linknek */
   background: #ffffff;
   color: #000;
   padding: 8px 16px;
-  text-decoration: none;
+  text-decoration: none; /* Link aláhúzásának eltávolítása */
   border: none;
   border-radius: 6px;
   font-weight: bold;
@@ -143,4 +158,47 @@ footer {
   display: inline-block;
   margin-right: 10px;
 }
-/* ... többi gomb stílus */
+
+.btn:hover, button[type="submit"]:hover, .action-button:hover {
+  background: #fb00ff;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(251, 0, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+/* Szerkesztés és Törlés Gombok Egységesítése */
+table td .action-button {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    background-color: #ff3aeb; /* Élénk rózsaszín Szerkesztés */
+    color: #fff;
+    border-radius: 4px;
+    margin: 0; /* Margók eltávolítása */
+}
+
+table td form button {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    background-color: #7f00ff; /* Kicsit sötétebb Lila Törlés */
+    color: #fff;
+    border-radius: 4px;
+    font-weight: normal;
+}
+
+table td form button:hover {
+    background-color: #6a00c9;
+}
+
+
+/* --- LÁBLÉC --- */
+footer {
+  text-align: center;
+  padding: 15px 20px;
+  background-color: #000000;
+  color: #fff;
+  width: 100%;
+  position: fixed; 
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+}
