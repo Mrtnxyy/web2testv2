@@ -1,4 +1,3 @@
-// models/mu.js
 const mongoose = require('mongoose');
 
 const muSchema = new mongoose.Schema({
