@@ -1,0 +1,22 @@
+<h2><%= enekes._id ? 'Énekes szerkesztése' : 'Új énekes hozzáadása' %></h2>
+
+<% if (error) { %>
+    <p style="color: red;">Hiba: <%= error %></p>
+<% } %>
+
+<% 
+    // Meghatározzuk az URL-t (action) és a metódust (mindig POST)
+    // Ha az 'enekes' objektumnak van MongoDB azonosítója (_id), akkor Szerkesztés, különben Új hozzáadás.
+    const formAction = enekes._id ? `/crud/edit/${enekes._id}` : '/crud/add';
+%>
+
+<form method="POST" action="<%= formAction %>">
+    <label for="nev">Név:</label><br>
+    <input type="text" id="nev" name="nev" value="<%= enekes.nev || '' %>" required><br><br>
+
+    <label for="szulev">Születési év:</label><br>
+    <input type="number" id="szulev" name="szulev" value="<%= enekes.szulev || '' %>" required><br><br>
+    
+    <button type="submit">Mentés</button>
+    <a href="/crud">Mégsem (Vissza a listához)</a>
+</form>
