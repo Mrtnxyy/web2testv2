@@ -1,4 +1,3 @@
-// models/repertoar.js
 const mongoose = require('mongoose');
 
 const repertoarSchema = new mongoose.Schema({
