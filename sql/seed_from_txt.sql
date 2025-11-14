@@ -1,6 +1,3 @@
--- Seed SQL created from the provided TXT files.
--- Run after init_tables.sql to populate the enekes, mu, szerep, repertoar tables.
--- This file was auto-generated from the uploaded TXT files.
 INSERT INTO enekes (id, nev, szulev) VALUES (1, 'Staviczky Zinajda', 1974);
 INSERT INTO enekes (id, nev, szulev) VALUES (2, 'Sztudnicska Bökény', 1971);
 INSERT INTO enekes (id, nev, szulev) VALUES (3, 'Koronthaly Hágár', 1949);

@@ -1,4 +1,3 @@
--- SQL inicializáció az Opera Archívumhoz (PostgreSQL)
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100),

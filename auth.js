@@ -1,22 +1,15 @@
-// routes/auth.js (MongoDB Mongoose Logic)
-
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const User = require('../models/User'); // <-- Mongoose User Modell importálása
-
-// Az adatbázis modul (db) hivatkozása törölve a MongoDB miatt.
-
+const User = require('../models/User');
 
 router.get('/register', (req, res) => {
-  // A korábbi EJS hibák elkerülése végett átadunk egy null/üres error objektumot
   res.render('auth/register', { error: null });
 });
 
 router.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
   try {
-    // MongoDB lekérdezés: Ellenőrzés, hogy az email létezik-e (SQL: SELECT id FROM users...)
     const existingUser = await User.findOne({ email: email }); 
     
     if (existingUser) {
@@ -26,13 +19,11 @@ router.post('/register', async (req, res) => {
     const hash = await bcrypt.hash(password, 10);
     const role = 'user';
 
-    // MongoDB beszúrás: Új felhasználó létrehozása (SQL: INSERT INTO users...)
     await User.create({
       name: name,
       email: email,
       password: hash,
       role: role
-      // created_at automatikusan beállítódik a modellben
     });
     
     res.redirect('/auth/login');
@@ -49,7 +40,6 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
-    // MongoDB lekérdezés: Felhasználó keresése (SQL: SELECT * FROM users...)
     const user = await User.findOne({ email: email });
     
     if (!user) {
@@ -62,7 +52,6 @@ router.post('/login', async (req, res) => {
       return res.render('auth/login', { error: 'Helytelen adatok.' });
     }
     
-    // Mongoose-ban az azonosító az _id mező (user._id)
     req.session.user = { id: user._id, name: user.name, email: user.email, role: user.role };
     res.redirect('/');
   } catch (err) {
