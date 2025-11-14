@@ -2,11 +2,14 @@
 const express = require('express');
 const router = express.Router();
 
-// Mongoose Modellek importálása
+// Mongoose Modellek importálása (Mindig ellenőrizd a betűméretet!)
 const Enekes = require('../models/Enekes'); 
-// A többi modell (Mu, Szerep, Repertoar) is importálva van, ha szükséges
+// A többi modult (Mu, Szerep, Repertoar) is importáljuk, ha szükséges
+const Mu = require('../models/Mu'); 
+const Szerep = require('../models/Szerep'); 
+const Repertoar = require('../models/Repertoar'); 
 
-// Middleware: admin jogosultság ellenőrzésére
+// Middleware: admin jogosultság ellenőrzésére (ha be van kapcsolva a bejelentkezés)
 function ensureAdmin(req, res, next) {
     if (req.session.user && req.session.user.role === 'admin') {
         return next();
@@ -19,14 +22,10 @@ function ensureAdmin(req, res, next) {
 // Énekesek listázása (CRUD főoldal) - /crud
 // ----------------------
 router.get('/', async (req, res) => {
-    // Ellenőrizzük, hogy be van-e jelentkezve
     if (!req.session.user) {
         return res.redirect('/auth/login');
     }
     
-    // Ideiglenesen kikapcsoljuk az admin ellenőrzést, amíg a bejelentkezés tökéletesen nem működik
-    // Bár ez nem ideális, segít látni, ha a Mongo lekérdezés működik.
-
     try {
         // Mongoose lekérdezés: minden énekes lekérdezése
         const enekesek = await Enekes.find().sort({ nev: 1 }).lean(); 
@@ -44,18 +43,56 @@ router.get('/', async (req, res) => {
     }
 });
 
+// ----------------------
+// ÚJ ÉNEKES HOZZÁADÁSA (CREATE) - /crud/add
+// ----------------------
+router.get('/add', ensureAdmin, (req, res) => {
+    // Üres objektumot adunk át az űrlapnak, jelezve a "Hozzáadás" módot
+    res.render('crud/enekes_form', { 
+        title: 'Új énekes hozzáadása', 
+        enekes: {}, // Üres objektum
+        error: null 
+    });
+});
+
+router.post('/add', ensureAdmin, async (req, res) => {
+    const { nev, szulev } = req.body;
+    try {
+        // A legmagasabb originalId megkeresése és növelése (ez kell a kapcsolatok miatt)
+        const lastEnekes = await Enekes.findOne().sort({ originalId: -1 });
+        const newOriginalId = (lastEnekes ? lastEnekes.originalId : 0) + 1;
+
+        // Mongoose: dokumentum létrehozása
+        await Enekes.create({ 
+            originalId: newOriginalId,
+            nev: nev, 
+            szulev: parseInt(szulev) 
+        });
+        
+        req.session.messages = ['Új énekes sikeresen hozzáadva.'];
+        res.redirect('/crud');
+    } catch (error) {
+        console.error('Hiba az énekes hozzáadásakor:', error);
+        // Hiba esetén visszatöltjük az űrlapot a felhasználó által beírt adatokkal
+        res.render('crud/enekes_form', { 
+            title: 'Új énekes hozzáadása', 
+            enekes: req.body, 
+            error: 'Adatbázis hiba történt a beszúrás során.' 
+        });
+    }
+});
+
 
 // ----------------------
-// Énekes Szerkesztése - /crud/edit/:id
+// Énekes Szerkesztése (UPDATE) - /crud/edit/:id
 // ----------------------
 router.get('/edit/:id', ensureAdmin, async (req, res) => {
     try {
-        // MongoDB _id alapján történő keresés
+        // Mongoose ID (_id) alapján történő keresés
         const enekes = await Enekes.findById(req.params.id).lean(); 
         if (!enekes) {
             return res.status(404).send('Énekes nem található.');
         }
-        // Feltételezzük, hogy van 'crud/enekes_form.ejs' fájl
         res.render('crud/enekes_form', { title: 'Énekes szerkesztése', enekes: enekes, error: null });
     } catch (error) {
         console.error('Hiba a szerkesztő űrlap betöltésekor:', error);
@@ -73,30 +110,32 @@ router.post('/edit/:id', ensureAdmin, async (req, res) => {
             szulev: parseInt(szulev) 
         });
         
-        // Üzenet hozzáadása a sessionhöz
         req.session.messages = ['Énekes sikeresen frissítve.'];
         res.redirect('/crud');
     } catch (error) {
         console.error('Hiba az énekes frissítésekor:', error);
+        // Hiba esetén visszatöltjük az űrlapot
         res.render('crud/enekes_form', { 
             title: 'Énekes szerkesztése', 
-            enekes: req.body, 
+            enekes: { _id: req.params.id, nev, szulev }, 
             error: 'Hiba történt a frissítés során.' 
         });
     }
 });
 
 // ----------------------
-// Énekes Törlése - /crud/delete/:id
+// Énekes Törlése (DELETE) - /crud/delete/:id
 // ----------------------
-// Mivel a method-override a POST-ot használja a DELETE kéréshez:
 router.post('/delete/:id', ensureAdmin, async (req, res) => {
     try {
         // Mongoose: dokumentum törlése az ID alapján
-        await Enekes.findByIdAndDelete(req.params.id);
+        const deletedEnekes = await Enekes.findByIdAndDelete(req.params.id);
         
-        // Mivel a repertoarban is originalId-k vannak, ott nem kell itt külön törölni, csak az Enekes-t.
-
+        // Mivel a repertoárban az originalId-t használjuk, a repertoár tételeket is törölni kell:
+        if(deletedEnekes) {
+            await Repertoar.deleteMany({ enekesid: deletedEnekes.originalId });
+        }
+        
         req.session.messages = ['Énekes sikeresen törölve.'];
         res.redirect('/crud');
     } catch (error) {
