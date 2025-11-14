@@ -1,4 +1,3 @@
-// models/szerep.js
 const mongoose = require('mongoose');
 
 const szerepSchema = new mongoose.Schema({
