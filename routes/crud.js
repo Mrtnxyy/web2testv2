@@ -4,9 +4,9 @@ const router = express.Router();
 
 // Mongoose Modellek importálása
 const Enekes = require('../models/Enekes'); 
-const Mu = require('../models/mu'); 
-const Szerep = require('../models/szerep'); 
-const Repertoar = require('../models/repertoar'); 
+const Mu = require('../models/Mu'); 
+const Szerep = require('../models/Szerep'); 
+const Repertoar = require('../models/Repertoar'); 
 
 // Middleware: admin jogosultság ellenőrzésére (ezzel védjük a CRUD oldalakat)
 function ensureAdmin(req, res, next) {
