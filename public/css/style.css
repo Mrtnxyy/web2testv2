@@ -1,9 +1,9 @@
 /*
- * OPERA ARCHÍVUM EGYESÍTETT CSS
- * Alap stílus: Gradiens, sötét téma (#000000 és #fb00ff)
+ * OPERA ARCHÍVUM EGYESÍTETT CSS (MongoDB-kompatibilis projekt)
+ * Téma: Sötét, Gradiens, Animált
 */
 
-/* --- ALAP BEÁLLÍTÁSOK --- */
+/* --- ALAP BEÁLLÍTÁSOK ÉS HÁTTÉR --- */
 * {
   margin: 0;
   padding: 0;
@@ -12,12 +12,22 @@
 
 body, html {
   font-family: 'Poppins', sans-serif;
-  color: #fff; /* Alapértelmezett szövegszín */
+  color: #fff; 
   line-height: 1.6;
   min-height: 100vh;
-  /* Gradiens háttér a 'vagány' CSS-ből */
+  /* Gradiens háttér */
   background: linear-gradient(135deg, #000000 15%, #7f00ff 50%, #000000 85%);
-  background-attachment: fixed; /* Fix háttér a görgetéshez */
+  background-attachment: fixed; 
+}
+
+/* --- ELRENDEZÉS ÉS KÖZÉPRE IGAZÍTÁS JAVÍTÁSA --- */
+
+/* Fő tartalom konténer: biztosítja a tartalom középre igazítását és a paddinget */
+.main-content-container {
+    max-width: 1200px;
+    margin: 0 auto; /* Középre igazítás */
+    padding: 20px; 
+    padding-top: 40px; /* Hely a navigációs sáv alatt */
 }
 
 /* --- NAVIGÁCIÓ ÉS CÍM --- */
@@ -25,22 +35,22 @@ body, html {
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
-  padding: 10px 20px; /* Megnövelt padding az oldal szélén */
-  margin-top: 5px;
+  padding: 10px 20px;
 }
 
 .logo {
   font-size: 1.8rem;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #ff3aeb; /* Élénk szín a logóhoz */
-  text-shadow: 0 0 5px rgba(255, 58, 235, 0.5); /* Enyhe árnyék */
+  color: #ff3aeb; /* Élénk szín */
+  text-shadow: 0 0 5px rgba(255, 58, 235, 0.5);
 }
 
 .nav-links {
   list-style: none;
   display: flex;
   gap: 15px;
+  flex-wrap: nowrap; /* Fixálja a navigációt egy sorba */
 }
 
 .nav-links li a {
@@ -54,35 +64,7 @@ body, html {
 }
 
 .nav-links li a:hover {
-  color: #ffd8ec; /* Halvány szín hoveren */
-}
-
-/* --- HERO / FŐ TARTALOM --- */
-/* A Hero szekciót most a fő tartalom konténerének használjuk */
-.hero {
-  padding: 40px 20px;
-  text-align: center;
-  /* Felesleges min-height: 100vh eltávolítva a flexbox elrendezés helyett */
-}
-
-.hero-content {
-  max-width: 800px;
-  margin: 0 auto;
-  padding-top: 50px; /* Margó a menü alatt */
-  text-align: left;
-}
-
-.hero-content h1, h2 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-  color: #ff3aeb;
-  text-align: center;
-}
-
-.hero-content p {
-  font-size: 1.1rem;
-  margin-bottom: 30px;
-  color: #d1d5db;
+  color: #ffd8ec;
 }
 
 /* --- TÁBLÁZATOK (CRUD LISTA) STÍLUSA --- */
@@ -101,7 +83,7 @@ table {
 table th, table td {
   padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Halvány fehér elválasztó */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 table th {
@@ -112,17 +94,17 @@ table th {
 }
 
 table tr:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.2); /* Sötétebb csíkozás */
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 table tr:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Halvány kiemelés hoveren */
+  background-color: rgba(255, 255, 255, 0.1); 
   cursor: default;
 }
 
-/* --- GOMBOK ÉS LINK STÍLUSOK --- */
+/* --- GOMBOK ÉS AKCIÓK (CRUD) --- */
 
-.btn, .cta-button, button[type="submit"] {
+.btn, button[type="submit"] {
   background: #ffffff;
   color: #000;
   padding: 8px 16px;
@@ -136,7 +118,7 @@ table tr:hover {
   margin-right: 10px;
 }
 
-.btn:hover, .cta-button:hover, button[type="submit"]:hover {
+.btn:hover, button[type="submit"]:hover {
   background: #fb00ff;
   color: #fff;
   box-shadow: 0 0 10px rgba(251, 0, 255, 0.7);
@@ -203,7 +185,5 @@ footer {
   padding: 15px 20px;
   background-color: #000000;
   color: #fff;
-  position: relative;
-  bottom: 0;
   width: 100%;
 }
