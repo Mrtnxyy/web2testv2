@@ -1,0 +1,35 @@
+<h2>Énekesek Archívuma (<%= enekesek.length %> bejegyzés)</h2>
+
+<% if (messages && messages.length > 0) { %>
+    <p style="color: green;"><%= messages[0] %></p>
+<% } %>
+
+<a href="/crud/add">Új énekes hozzáadása</a>
+
+<% if (enekesek.length > 0) { %>
+    <table>
+        <thead>
+            <tr>
+                <th>Név</th>
+                <th>Születési év</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% enekesek.forEach(enekes => { %>
+                <tr>
+                    <td><%= enekes.nev %></td>
+                    <td><%= enekes.szulev %></td>
+                    <td>
+                        <a href="/crud/edit/<%= enekes._id %>">Szerkesztés</a>
+                        <form method="POST" action="/crud/delete/<%= enekes._id %>" style="display:inline;">
+                            <button type="submit">Törlés</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>Nincs énekes az adatbázisban.</p>
+<% } %>
