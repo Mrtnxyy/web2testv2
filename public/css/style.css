@@ -1,5 +1,5 @@
 /*
- * OPERA ARCHÍVUM EGYESÍTETT CSS (MongoDB-kompatibilis projekt)
+ * OPERA ARCHÍVUM EGYESÍTETT CSS
  * Téma: Sötét, Gradiens, Animált
 */
 
@@ -20,17 +20,7 @@ body, html {
   background-attachment: fixed; 
 }
 
-/* --- ELRENDEZÉS ÉS KÖZÉPRE IGAZÍTÁS JAVÍTÁSA --- */
-
-/* Fő tartalom konténer: biztosítja a tartalom középre igazítását és a paddinget */
-.main-content-container {
-    max-width: 1200px;
-    margin: 0 auto; /* Középre igazítás */
-    padding: 20px; 
-    padding-top: 40px; /* Hely a navigációs sáv alatt */
-}
-
-/* --- NAVIGÁCIÓ ÉS CÍM --- */
+/* --- NAVIGÁCIÓ ÉS FŐ ELRENDEZÉS --- */
 .navbar {
   display: flex; 
   justify-content: space-between; 
@@ -42,7 +32,7 @@ body, html {
   font-size: 1.8rem;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #ff3aeb; /* Élénk szín */
+  color: #ff3aeb; 
   text-shadow: 0 0 5px rgba(255, 58, 235, 0.5);
 }
 
@@ -50,7 +40,7 @@ body, html {
   list-style: none;
   display: flex;
   gap: 15px;
-  flex-wrap: nowrap; /* Fixálja a navigációt egy sorba */
+  flex-wrap: nowrap;
 }
 
 .nav-links li a {
@@ -67,6 +57,25 @@ body, html {
   color: #ffd8ec;
 }
 
+/* --- KÖZÉPSŐ KONTÉNER (A FŐ ELRENDEZÉS JAVÍTÁSA) --- */
+
+/* Fő tartalom konténer: korlátozza a szélességet és középre igazítja az egész oldalt */
+.main-content-container {
+    max-width: 1200px;
+    margin: 0 auto; /* Középre igazítás */
+    padding: 20px; 
+    padding-top: 40px; 
+}
+
+/* Címek, amelyek a tartalom konténeren belül vannak */
+h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ff3aeb;
+    margin: 0 auto 20px auto; /* Biztosítja a középre igazítást */
+}
+
 /* --- TÁBLÁZATOK (CRUD LISTA) STÍLUSA --- */
 
 table {
@@ -74,7 +83,7 @@ table {
   max-width: 1000px;
   margin: 20px auto;
   border-collapse: collapse;
-  background-color: rgba(64, 64, 64, 0.4); /* Áttetsző sötét háttér */
+  background-color: rgba(64, 64, 64, 0.4); 
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
@@ -87,19 +96,50 @@ table th, table td {
 }
 
 table th {
-  background-color: #7f00ff; /* Élénk színű fejléc */
+  background-color: #7f00ff; 
   font-weight: 600;
   color: #fff;
   text-transform: uppercase;
 }
 
 table tr:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.2); 
 }
 
 table tr:hover {
   background-color: rgba(255, 255, 255, 0.1); 
   cursor: default;
+}
+
+/* --- ŰRLAPOK (Login, Register, Add/Edit) STÍLUSA --- */
+
+form {
+  max-width: 400px;
+  margin: 20px auto; /* Középre igazítás! */
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  text-align: left;
+}
+
+form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ff3aeb;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
 }
 
 /* --- GOMBOK ÉS AKCIÓK (CRUD) --- */
@@ -132,51 +172,6 @@ table td a, table td form button {
   background-color: #ff3aeb;
   color: #fff;
   border-radius: 4px;
-}
-
-table td form button {
-  background-color: #ff3aeb;
-  margin-left: 5px;
-}
-
-table td form button:hover {
-    background-color: #ff007f;
-}
-
-/* --- ŰRLAPOK (Login, Register, Add/Edit) --- */
-
-form {
-  max-width: 400px;
-  margin: 20px auto;
-  padding: 30px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  text-align: left;
-}
-
-form label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 600;
-}
-
-form input[type="text"],
-form input[type="email"],
-form input[type="password"],
-form input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ff3aeb;
-  border-radius: 5px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
-}
-
-form button[type="submit"] {
-  width: 100%;
-  margin-top: 10px;
 }
 
 /* --- LÁBLÉC --- */
