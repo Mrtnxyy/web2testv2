@@ -1,58 +1,97 @@
-// seed_db.js
-
+// seed_db.js - MongoDB feltöltő szkript
 const fs = require('fs');
 const path = require('path');
-// Feltételezzük, hogy van egy db modulod a kapcsolat kezelésére (pl. require('./config/db'))
-const db = require('./config/db'); // Cseréld le a valós DB modulodra!
+const mongoose = require('mongoose');
+require('dotenv').config();
 
+// Modellek importálása (Ezeknek a fájloknak létezniük kell a models/ mappában!)
+const Enekes = require('./models/Enekes');
+const Mu = require('./models/Mu');
+const Szerep = require('./models/Szerep');
+const Repertoar = require('./models/Repertoar');
+const User = require('./models/User'); // User modell is szükséges a korábbi lépésekből
+
+// Adatfájl konfiguráció
+// A 'fields' itt a Mongoose Model mezőneveire utal.
 const dataFiles = [
-    { file: 'mu.txt', table: 'mu', fields: ['id', 'szerzo', 'cim'] },
-    { file: 'enekes.txt', table: 'enekes', fields: ['id', 'nev', 'szulev'] },
-    { file: 'szerep.txt', table: 'szerep', fields: ['id', 'szerepnev', 'muid', 'hang'] },
-    { file: 'repertoar.txt', table: 'repertoar', fields: ['enekesid', 'szerepid', 'utoljara'] }
+    // TXT-ben: id, nev, szulev -> Mongoose-ban: originalId, nev, szulev
+    { file: 'enekes.txt', model: Enekes, fields: ['id', 'nev', 'szulev'] },
+    // TXT-ben: id, szerzo, cim -> Mongoose-ban: originalId, szerzo, cim
+    { file: 'mu.txt', model: Mu, fields: ['id', 'szerzo', 'cim'] },
+    // TXT-ben: id, szerepnev, muid, hang -> Mongoose-ban: originalId, szerepnev, muid, hang
+    { file: 'szerep.txt', model: Szerep, fields: ['id', 'szerepnev', 'muid', 'hang'] },
+    // TXT-ben: enekesid, szerepid, utoljara -> Mongoose-ban: enekesid, szerepid, utoljara
+    { file: 'repertoar.txt', model: Repertoar, fields: ['enekesid', 'szerepid', 'utoljara'] }
 ];
 
-async function seedDatabase() {
-    console.log('Adatbázis feltöltése TXT fájlokból...');
+// Fájlok beolvasása és dokumentumokká alakítása
+function parseFile(filePath, fields) {
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+    const lines = fileContent.trim().split('\n').slice(1); // Fejléc sor kihagyása
     
-    for (const data of dataFiles) {
-        const filePath = path.join(__dirname, 'data', data.file); // Feltételezve, hogy a 'data/' mappában vannak
-        const fileContent = fs.readFileSync(filePath, 'utf8');
-        const lines = fileContent.trim().split('\n').slice(1); // Fejléc sor kihagyása
+    return lines.map(line => {
+        const values = line.split(';').map(v => v.trim());
+        const doc = {};
         
-        let successCount = 0;
-        
-        for (const line of lines) {
-            const values = line.split(';');
+        fields.forEach((field, index) => {
+            let val = values[index];
             
-            // Értékek tisztítása (például a stringek körül lévő szóközök eltávolítása)
-            const cleanValues = values.map(v => v.trim());
+            // Ha a mező az 'id', akkor 'originalId' néven mentjük a Mongoose modellekben
+            const docField = (field === 'id') ? 'originalId' : field;
             
-            // SQL parancs összeállítása
-            const sql = `INSERT INTO ${data.table} (${data.fields.join(', ')}) 
-                         VALUES ('${cleanValues.join("', '")}')`;
-            
-            try {
-                // Ezt a részt a te adatbázis kezelőd kódjával kell helyettesíteni!
-                // Példa (PostgreSQL 'pg' csomaggal): await db.query(sql); 
-                // Példa (MySQL 'mysql' csomaggal): await db.execute(sql);
-
-                console.log(`  -> Sikeresen beszúrva ${data.table} (ID: ${cleanValues[0]})`);
-                successCount++;
-
-            } catch (error) {
-                console.error(`Hiba a(z) ${data.table} beszúrásakor: ${error.message}`);
-                // További hibakereséshez érdemes a hibás sort is kiírni
+            // Számok konvertálása
+            if (docField.endsWith('id') || docField === 'szulev' || docField === 'utoljara' || docField === 'muid') {
+                doc[docField] = parseInt(val) || 0;
+            } else {
+                doc[docField] = val;
             }
-        }
-        console.log(`[Sikeres]: ${data.table} - ${successCount} sor beszúrva.`);
-    }
-
-    // Lehet, hogy le kell zárni a DB kapcsolatot, ha a db modul megköveteli
-    // db.end();
+        });
+        return doc;
+    });
 }
 
-seedDatabase().catch(err => {
-    console.error('Kritikus hiba a feltöltés során:', err);
-    process.exit(1);
-});
+async function seedDatabase() {
+    if (!process.env.MONGO_URI) {
+        console.error('KRITIKUS HIBA: MONGO_URI környezeti változó hiányzik!');
+        process.exit(1);
+    }
+    
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('MongoDB Csatlakozás sikeres, feltöltés indul...');
+    
+    try {
+        // Gyűjtemények törlése az újra feltöltéshez
+        console.log('Régi adatok törlése...');
+        await Promise.all([
+            Enekes.deleteMany({}),
+            Mu.deleteMany({}),
+            Szerep.deleteMany({}),
+            Repertoar.deleteMany({}),
+            // A users táblát itt nem töröljük, hogy az admin user megmaradjon!
+        ]);
+
+        for (const data of dataFiles) {
+            const filePath = path.join(__dirname, 'data', data.file);
+            console.log(`Feltöltés indítása: ${data.file}`);
+            
+            // Adatok beolvasása és átalakítása
+            const documents = parseFile(filePath, data.fields);
+            
+            // Adatok beszúrása a MongoDB-be
+            await data.model.insertMany(documents);
+            
+            console.log(`[Sikeres]: ${data.model.collection.collectionName} - ${documents.length} dokumentum beszúrva.`);
+        }
+
+    } catch (error) {
+        console.error('\n!!! KRITIKUS HIBA A FELTÖLTÉS SORÁN !!!');
+        console.error('Ennek oka lehet duplikált originalId, érvénytelen adat, vagy hiba a modellekben.');
+        console.error(error.message);
+    } finally {
+        // Kapcsolat bezárása a szkript végén
+        mongoose.connection.close();
+        console.log('Adatbázis feltöltési szkript befejeződött.');
+    }
+}
+
+seedDatabase();
