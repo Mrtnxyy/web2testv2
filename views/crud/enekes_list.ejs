@@ -1,140 +1,49 @@
-// routes/crud.js (MongoDB Mongoose Logic)
-const express = require('express');
-const router = express.Router();
+<h2>Énekesek Archívuma (<%= enekesek.length %> bejegyzés)</h2>
 
-// Mongoose Modellek importálása
-const Enekes = require('../models/enekes'); 
-const Mu = require('../models/mu'); 
-const Szerep = require('../models/szerep'); 
-const Repertoar = require('../models/repertoar'); 
-
-// Middleware: admin jogosultság ellenőrzésére
-function ensureAdmin(req, res, next) {
-    if (req.session.user && req.session.user.role === 'admin') {
-        return next();
-    }
-    res.redirect('/'); 
-}
-
-// ----------------------
-// Énekesek listázása (CRUD főoldal) - /crud
-// ----------------------
-router.get('/', async (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/auth/login');
-    }
+<% if (messages && messages.length > 0) { %>
+    <div class="success-notification" id="success-msg">
+        <%= messages[0] %>
+        <button class="notification-close" onclick="document.getElementById('success-msg').style.display='none'">
+            &times;
+        </button>
+    </div>
     
-    try {
-        const enekesek = await Enekes.find().sort({ nev: 1 }).lean(); 
-        
-        // KRITIKUS JAVÍTÁS: A res.render() hívásnak a helyes fájlra kell mutatnia
-        // Mivel a nézeted tartalmát elküldted, de a fájl neve bizonytalan:
-        // CSERÉLD KI az 'enekes_list' nevet a valódi fájlnévre, ha az nem egyezik!
-        // Példa: res.render('crud/list', {...}) 
-        
-        res.render('crud/enekes_list', { 
-            title: 'Énekesek (CRUD)', 
-            enekesek: enekesek,
-            messages: req.session.messages || null
-        });
-        req.session.messages = [];
-    } catch (error) {
-        console.error('Hiba az énekesek lekérdezésekor:', error);
-        res.render('error', { message: 'Adatbázis hiba történt a listázás során.' });
-    }
-});
+    <script>
+        setTimeout(() => {
+            const msg = document.getElementById('success-msg');
+            if (msg) {
+                msg.style.display = 'none';
+            }
+        }, 3000);
+    </script>
+<% } %>
 
+<a href="/crud/add" class="action-button btn">Új énekes hozzáadása</a>
 
-// ----------------------
-// ÚJ ÉNEKES HOZZÁADÁSA (CREATE) - /crud/add
-// ----------------------
-router.get('/add', ensureAdmin, (req, res) => {
-    res.render('crud/enekes_form', { 
-        title: 'Új énekes hozzáadása', 
-        enekes: {}, 
-        error: null 
-    });
-});
-
-router.post('/add', ensureAdmin, async (req, res) => {
-    const { nev, szulev } = req.body;
-    try {
-        const lastEnekes = await Enekes.findOne().sort({ originalId: -1 });
-        const newOriginalId = (lastEnekes ? lastEnekes.originalId : 0) + 1;
-
-        await Enekes.create({ 
-            originalId: newOriginalId,
-            nev: nev, 
-            szulev: parseInt(szulev) 
-        });
-        
-        req.session.messages = ['Új énekes sikeresen hozzáadva.'];
-        res.redirect('/crud');
-    } catch (error) {
-        console.error('Hiba az énekes hozzáadásakor:', error);
-        res.render('crud/enekes_form', { 
-            title: 'Új énekes hozzáadása', 
-            enekes: req.body, 
-            error: 'Adatbázis hiba történt a beszúrás során.' 
-        });
-    }
-});
-
-
-// ----------------------
-// Énekes Szerkesztése (UPDATE) - /crud/edit/:id
-// ----------------------
-router.get('/edit/:id', ensureAdmin, async (req, res) => {
-    try {
-        const enekes = await Enekes.findById(req.params.id).lean(); 
-        if (!enekes) {
-            return res.status(404).send('Énekes nem található.');
-        }
-        res.render('crud/enekes_form', { title: 'Énekes szerkesztése', enekes: enekes, error: null });
-    } catch (error) {
-        console.error('Hiba a szerkesztő űrlap betöltésekor:', error);
-        res.status(500).send('Hiba a szerkesztő űrlap betöltésekor.');
-    }
-});
-
-router.post('/edit/:id', ensureAdmin, async (req, res) => {
-    const { nev, szulev } = req.body;
-    try {
-        await Enekes.findByIdAndUpdate(req.params.id, { 
-            nev: nev, 
-            szulev: parseInt(szulev) 
-        });
-        
-        req.session.messages = ['Énekes sikeresen frissítve.'];
-        res.redirect('/crud');
-    } catch (error) {
-        console.error('Hiba az énekes frissítésekor:', error);
-        res.render('crud/enekes_form', { 
-            title: 'Énekes szerkesztése', 
-            enekes: { _id: req.params.id, nev, szulev }, 
-            error: 'Adatbázis hiba történt a frissítés során.' 
-        });
-    }
-});
-
-// ----------------------
-// Énekes Törlése (DELETE) - /crud/delete/:id
-// ----------------------
-router.post('/delete/:id', ensureAdmin, async (req, res) => {
-    try {
-        const deletedEnekes = await Enekes.findByIdAndDelete(req.params.id);
-        
-        if(deletedEnekes) {
-            await Repertoar.deleteMany({ enekesid: deletedEnekes.originalId });
-        }
-        
-        req.session.messages = ['Énekes sikeresen törölve.'];
-        res.redirect('/crud');
-    } catch (error) {
-        console.error('Hiba az énekes törlésekor:', error);
-        req.session.messages = ['Hiba történt a törlés során.'];
-        res.redirect('/crud');
-    }
-});
-
-module.exports = router;
+<% if (enekesek.length > 0) { %>
+    <table>
+        <thead>
+            <tr>
+                <th>Név</th>
+                <th>Születési év</th>
+                <th>Műveletek</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% enekesek.forEach(enekes => { %>
+                <tr>
+                    <td><%= enekes.nev %></td>
+                    <td><%= enekes.szulev %></td>
+                    <td>
+                        <a href="/crud/edit/<%= enekes._id %>" class="action-button">Szerkesztés</a>
+                        <form method="POST" action="/crud/delete/<%= enekes._id %>" style="display:inline;">
+                            <button type="submit">Törlés</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+<% } else { %>
+    <p>Nincs énekes az adatbázisban.</p>
+<% } %>
