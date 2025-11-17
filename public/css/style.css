@@ -360,6 +360,7 @@ table td form button {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
+    cursor: pointer;
 }
 
 table td a.action-button:hover,
