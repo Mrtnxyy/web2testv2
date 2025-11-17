@@ -7,7 +7,6 @@
             &times;
         </button>
     </div>
-    
     <script>
         setTimeout(() => {
             const msg = document.getElementById('success-msg');
@@ -18,14 +17,30 @@
     </script>
 <% } %>
 
-<a href="/crud/add" class="action-button btn">Új énekes hozzáadása</a>
+<form method="GET" action="/crud" class="search-form">
+    <input type="text" name="q" placeholder="Keresés név alapján..." value="<%= currentQuery || '' %>">
+    <button type="submit" class="btn search-btn">Keresés</button>
+    <% if (currentQuery) { %>
+        <a href="/crud" class="btn clear-btn">Szűrés törlése</a>
+    <% } %>
+</form>
+
+<% if (user && user.role === 'admin') { %>
+    <a href="/crud/add" class="action-button add-new-btn">Új énekes hozzáadása</a>
+<% } %>
 
 <% if (enekesek.length > 0) { %>
     <table>
         <thead>
             <tr>
-                <th>Név</th>
-                <th>Születési év</th>
+                <th>Név <a href="/crud?sortBy=nev&sortOrder=<%= currentSortField === 'nev' && currentSortOrder == 1 ? -1 : 1 %>" class="sort-icon">
+                    <%= currentSortField === 'nev' ? (currentSortOrder == 1 ? '▲' : '▼') : '↕' %>
+                </a></th>
+                
+                <th>Születési év <a href="/crud?sortBy=szulev&sortOrder=<%= currentSortField === 'szulev' && currentSortOrder == 1 ? -1 : 1 %>" class="sort-icon">
+                    <%= currentSortField === 'szulev' ? (currentSortOrder == 1 ? '▲' : '▼') : '↕' %>
+                </a></th>
+                
                 <th>Műveletek</th>
             </tr>
         </thead>
@@ -35,15 +50,19 @@
                     <td><%= enekes.nev %></td>
                     <td><%= enekes.szulev %></td>
                     <td>
-                        <a href="/crud/edit/<%= enekes._id %>" class="action-button">Szerkesztés</a>
-                        <form method="POST" action="/crud/delete/<%= enekes._id %>" style="display:inline;">
-                            <button type="submit">Törlés</button>
-                        </form>
+                        <% if (user && user.role === 'admin') { %>
+                            <a href="/crud/edit/<%= enekes._id %>" class="crud-edit-btn">Szerkesztés</a>
+                            <form method="POST" action="/crud/delete/<%= enekes._id %>" style="display:inline;">
+                                <button type="submit" class="crud-delete-btn">Törlés</button>
+                            </form>
+                        <% } else { %>
+                            Nincs jogosultság
+                        <% } %>
                     </td>
                 </tr>
             <% }); %>
         </tbody>
     </table>
 <% } else { %>
-    <p>Nincs énekes az adatbázisban.</p>
+    <p>Nincs találat az adatbázisban a szűrési feltételeknek megfelelően.</p>
 <% } %>
