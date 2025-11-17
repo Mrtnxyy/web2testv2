@@ -344,7 +344,8 @@ form input[type="number"] {
 }
 
 table td a.action-button, 
-table td form button {
+table td form button,
+table td form button[type="submit"] {
     padding: 6px 12px;
     font-size: 0.9rem;
     background-color: #7f00ff;
@@ -364,7 +365,8 @@ table td form button {
 }
 
 table td a.action-button:hover,
-table td form button:hover {
+table td form button:hover,
+table td form button[type="submit"]:hover {
     background-color: #6a00c9;
 }
 
