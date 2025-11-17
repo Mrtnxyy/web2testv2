@@ -197,7 +197,7 @@ h2 {
     width: 100%; 
     text-align: center;
     background: #ff3aeb; 
-    color: #fff !important; 
+    color: #000 !important; 
     padding: 10px 20px;
     font-size: 1.1rem;
 }
@@ -354,7 +354,11 @@ table td form button {
     font-weight: 600;
     transition: background-color 0.3s;
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    box-sizing: border-box;
 }
 
 table td a.action-button:hover,
