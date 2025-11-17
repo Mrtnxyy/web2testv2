@@ -12,7 +12,7 @@
   <nav class="navbar">
     
     <div class="logo">
-        <a href="/" style="color: inherit; text-decoration: none;">
+        <a href="/" class="logo-link">
             Opera Archívum
         </a>
     </div>
@@ -21,15 +21,15 @@
         <li><a href="/">Főoldal</a></li>
         
         <% if (!user) { %>
-          <li><a href="/auth/register">Regisztráció</a></li>
-          <li><a href="/auth/login">Bejelentkezés</a></li>
+          <li class="auth-link-item"><a href="/auth/register">Regisztráció</a></li>
+          <li class="auth-link-item"><a href="/auth/login" class="login-link">Bejelentkezés</a></li>
         <% } %>
 
         <% if (user) { %>
           <li><a href="/crud">Énekesek (CRUD)</a></li>
           
           <li class="profile-dropdown">
-            <a href="#">
+            <a href="#" class="profile-icon-link"> 
                 <span class="profile-icon">👤</span> 
                 Üdv, <%= user.name %>
             </a>
