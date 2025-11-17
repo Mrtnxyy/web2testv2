@@ -1,3 +1,9 @@
+/*
+ * OPERA ARCHÍVUM EGYESÍTETT CSS
+ * Téma: Sötét, Gradiens, Optimalizált
+*/
+
+/* --- ALAP BEÁLLÍTÁSOK --- */
 * {
   margin: 0;
   padding: 0;
@@ -9,10 +15,12 @@ body, html {
   color: #fff; 
   line-height: 1.6;
   min-height: 100vh;
+  /* Gradiens háttér */
   background: linear-gradient(135deg, #000000 15%, #7f00ff 50%, #000000 85%);
   background-attachment: fixed; 
 }
 
+/* --- NAVIGÁCIÓ ÉS FŐ ELRENDEZÉS --- */
 .navbar {
   display: flex; 
   justify-content: space-between; 
@@ -57,7 +65,7 @@ body, html {
   color: #ffd8ec;
 }
 
-/* PROFILIKON FLEXBOX FIX */
+/* --- PROFILIKON ÉS DROPDOWN STÍLUSOK FIXÁLVA --- */
 
 .profile-dropdown {
     position: relative;
@@ -66,10 +74,28 @@ body, html {
     cursor: pointer;
 }
 
+.profile-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 120%; 
+    background-color: #000;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 1000;
+    border-radius: 5px;
+    padding: 10px 0;
+    text-align: left;
+}
+
+.profile-dropdown:hover .profile-dropdown-content {
+    display: block;
+}
+
 .profile-dropdown a {
-    display: flex !important; 
-    align-items: center !important; 
-    padding: 5px 10px !important;
+    display: flex; 
+    align-items: center; 
+    padding: 5px 10px;
     color: #fff;
     text-decoration: none;
 }
@@ -86,24 +112,6 @@ body, html {
     font-weight: 700;
     font-size: 1rem;
     margin-right: 5px;
-}
-
-.profile-dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 120%;
-    background-color: #000;
-    min-width: 180px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
-    z-index: 1000;
-    border-radius: 5px;
-    padding: 10px 0;
-    text-align: left;
-}
-
-.profile-dropdown:hover .profile-dropdown-content {
-    display: block;
 }
 
 .profile-info {
@@ -129,16 +137,15 @@ body, html {
     color: white;
     padding: 8px 15px;
     text-decoration: none;
-    display: block !important; 
+    display: block;
     font-weight: 400;
-    width: 100%;
 }
 
 .profile-dropdown-content a:hover {
     background-color: #7f00ff;
 }
 
-/* KÖZÉPSŐ KONTÉNER ÉS TARTALOM */
+/* --- KÖZÉPSŐ KONTÉNER ÉS TARTALOM --- */
 
 .main-content-container {
     max-width: 1000px;
@@ -156,6 +163,7 @@ h2 {
     margin: 0 auto 20px auto; 
 }
 
+/* Főoldal szövegek igazítása */
 .main-content-container main h1, 
 .main-content-container main p {
     text-align: center;
@@ -164,14 +172,14 @@ h2 {
     max-width: 700px;
 }
 
-/* TÁBLÁZATOK (CRUD LISTA) */
+/* --- TÁBLÁZATOK (CRUD LISTA) JAVÍTVA --- */
 
 table {
   width: 100%;
   max-width: 900px;
   margin: 20px auto;
-  border-collapse: separate;
-  border-spacing: 0 10px;
+  border-collapse: collapse;
+  border-spacing: 0;
   background-color: transparent;
   box-shadow: none;
 }
@@ -181,15 +189,17 @@ table th {
   font-weight: 600;
   color: #fff;
   text-transform: uppercase;
-  padding: 12px 15px;
+  padding: 10px 15px; 
   border: none;
+  border-radius: 8px 8px 0 0; 
 }
 
 table tbody tr {
-    background-color: rgba(64, 64, 64, 0.8);
-    border-radius: 8px;
+    background-color: rgba(64, 64, 64, 0.6); 
+    border-radius: 8px; 
     overflow: hidden;
     transition: background-color 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
 }
 
 table tbody tr:hover {
@@ -198,33 +208,51 @@ table tbody tr:hover {
 }
 
 table td {
-  padding: 12px 15px;
+  padding: 8px 15px; 
   text-align: left;
   border: none;
+  font-size: 0.95rem; 
 }
 
 table td:last-child {
-    width: 250px;
+    width: 200px;
     text-align: right;
     display: flex;
     gap: 10px;
     justify-content: flex-end;
 }
 
-/* MENTETT ÜZENET FIXÁLÁSA */
+/* --- MENTETT ÜZENET DOBOZ (Visszajelzés) --- */
 
-.notification-box {
+.success-notification {
     position: fixed;
-    top: 20px;
+    bottom: 20px; 
     right: 20px;
     padding: 15px 25px;
-    background-color: #000000;
-    color: #ffffff;
+    background-color: #000;
+    color: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(251, 0, 255, 0.5);
+    box-shadow: 0 0 15px rgba(251, 0, 255, 0.7); 
     font-weight: 600;
     z-index: 1000;
-    animation: fadeout 5s forwards;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 5px;
+    transition: color 0.3s;
+}
+
+.notification-close:hover {
+    color: #ff3aeb;
 }
 
 @keyframes fadeout {
@@ -233,7 +261,8 @@ table td:last-child {
     100% { opacity: 0; transform: translateX(100%); }
 }
 
-/* GOMBOK ÉS ŰRLAPOK */
+
+/* --- GOMBOK ÉS ŰRLAPOK --- */
 
 form {
   max-width: 400px;
@@ -309,7 +338,7 @@ table td form button:hover {
 }
 
 
-/* LÁBLÉC */
+/* --- LÁBLÉC --- */
 footer {
   text-align: center;
   padding: 15px 20px;
