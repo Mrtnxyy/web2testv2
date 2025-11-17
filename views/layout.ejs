@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   
   <style>
+    
     .profile-dropdown {
         position: relative;
         display: inline-block;
@@ -19,7 +20,7 @@
         display: none;
         position: absolute;
         right: 0;
-        background-color: #000; /* Fekete háttér */
+        background-color: #000;
         min-width: 180px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
         z-index: 1000;
@@ -32,6 +33,23 @@
         display: block;
     }
 
+    .profile-icon {
+        background: #000;
+        color: #fff;
+
+        border-radius: 50%; 
+        width: 30px; 
+        height: 30px; 
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        font-weight: 700;
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+    
     .profile-info {
         padding: 5px 15px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -41,13 +59,13 @@
     .profile-info p {
         font-size: 0.9rem;
         font-weight: 600;
-        color: #ff3aeb; /* Élénk szín */
+        color: #ff3aeb; 
         margin: 0;
     }
     .profile-info small {
         display: block;
         font-size: 0.75rem;
-        color: #d1d5db; /* Halvány szín */
+        color: #d1d5db;
         text-transform: capitalize;
     }
 
@@ -61,24 +79,6 @@
 
     .profile-dropdown-content a:hover {
         background-color: #7f00ff;
-    }
-
-    .profile-icon {
-        background: #000;
-        color: #fff;
-        
-        border-radius: 50%; 
-        width: 30px;
-        height: 30px;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        
-        font-weight: 700;
-        font-size: 1rem;
-        margin-right: 5px;
-        margin-left: 10px;
     }
   </style>
 
@@ -106,7 +106,7 @@
           
           <li class="profile-dropdown">
             <a href="#" style="padding: 5px 0;">
-                <span class="profile-icon">👤</span>
+                <span class="profile-icon">👤</span> 
                 Üdv, <%= user.name %>
             </a>
             
@@ -118,7 +118,6 @@
                 </div>
 
                 <a href="/profile">Profil</a>
-
                 <a href="/messages">Üzenetek</a>
                 
                 <% if (user.role === 'admin') { %>
