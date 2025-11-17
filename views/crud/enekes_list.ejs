@@ -7,6 +7,7 @@
             &times;
         </button>
     </div>
+    
     <script>
         setTimeout(() => {
             const msg = document.getElementById('success-msg');
@@ -17,52 +18,59 @@
     </script>
 <% } %>
 
-<form method="GET" action="/crud" class="search-form">
-    <input type="text" name="q" placeholder="Keresés név alapján..." value="<%= currentQuery || '' %>">
-    <button type="submit" class="btn search-btn">Keresés</button>
-    <% if (currentQuery) { %>
-        <a href="/crud" class="btn clear-btn">Szűrés törlése</a>
-    <% } %>
-</form>
-
-<% if (user && user.role === 'admin') { %>
-    <a href="/crud/add" class="action-button add-new-btn">Új énekes hozzáadása</a>
-<% } %>
+<div class="crud-controls">
+    <input type="text" id="searchInput" placeholder="Keresés névre..." onkeyup="filterTable()" class="search-input">
+    <a href="/crud/add" class="action-button btn add-new-btn">Új énekes hozzáadása</a>
+</div>
 
 <% if (enekesek.length > 0) { %>
-    <table>
+    <table id="enekesTable">
         <thead>
             <tr>
-                <th>Név <a href="/crud?sortBy=nev&sortOrder=<%= currentSortField === 'nev' && currentSortOrder == 1 ? -1 : 1 %>" class="sort-icon">
-                    <%= currentSortField === 'nev' ? (currentSortOrder == 1 ? '▲' : '▼') : '↕' %>
-                </a></th>
-                
-                <th>Születési év <a href="/crud?sortBy=szulev&sortOrder=<%= currentSortField === 'szulev' && currentSortOrder == 1 ? -1 : 1 %>" class="sort-icon">
-                    <%= currentSortField === 'szulev' ? (currentSortOrder == 1 ? '▲' : '▼') : '↕' %>
-                </a></th>
-                
+                <th>Név</th>
+                <th>Születési év</th>
                 <th>Műveletek</th>
             </tr>
         </thead>
         <tbody>
             <% enekesek.forEach(enekes => { %>
                 <tr>
-                    <td><%= enekes.nev %></td>
+                    <td class="enekes-nev"><%= enekes.nev %></td>
                     <td><%= enekes.szulev %></td>
                     <td>
-                        <% if (user && user.role === 'admin') { %>
-                            <a href="/crud/edit/<%= enekes._id %>" class="crud-edit-btn">Szerkesztés</a>
-                            <form method="POST" action="/crud/delete/<%= enekes._id %>" style="display:inline;">
-                                <button type="submit" class="crud-delete-btn">Törlés</button>
-                            </form>
-                        <% } else { %>
-                            Nincs jogosultság
-                        <% } %>
+                        <a href="/crud/edit/<%= enekes._id %>" class="action-button">Szerkesztés</a>
+                        <form method="POST" action="/crud/delete/<%= enekes._id %>" style="display:inline;">
+                            <button type="submit">Törlés</button>
+                        </form>
                     </td>
                 </tr>
             <% }); %>
         </tbody>
     </table>
 <% } else { %>
-    <p>Nincs találat az adatbázisban a szűrési feltételeknek megfelelően.</p>
+    <p>Nincs énekes az adatbázisban.</p>
 <% } %>
+
+<script>
+function filterTable() {
+    const input = document.getElementById('searchInput');
+    const filter = input.value.toUpperCase();
+    const table = document.getElementById('enekesTable');
+    if (!table) return;
+    const tr = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < tr.length; i++) {
+        const nameCell = tr[i].getElementsByClassName('enekes-nev')[0];
+        
+        if (nameCell) {
+            const textValue = nameCell.textContent || nameCell.innerText;
+            
+            if (textValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }       
+    }
+}
+</script>
