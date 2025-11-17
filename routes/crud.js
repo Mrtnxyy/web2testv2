@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const Enekes = require('../models/Enekes'); 
-const Mu = require('../models/Mu'); 
-const Szerep = require('../models/Szerep'); 
-const Repertoar = require('../models/Repertoar'); 
+const Enekes = require('../models/enekes'); 
+const Repertoar = require('../models/repertoar'); 
 
 function ensureAdmin(req, res, next) {
     if (req.session.user && req.session.user.role === 'admin') {
@@ -17,31 +15,18 @@ router.get('/', async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/auth/login');
     }
-
+    
     try {
-        const searchQuery = req.query.q;
-        const filter = {};
-        if (searchQuery) {
-            filter.nev = { $regex: searchQuery, $options: 'i' }; 
-        }
-
-        const sortField = req.query.sortBy || 'nev'; 
-        const sortOrder = req.query.sortOrder || 1;
-        const sortOptions = {};
-        sortOptions[sortField] = sortOrder;
-
-        const enekesek = await Enekes.find(filter).sort(sortOptions).lean(); 
+        const enekesek = await Enekes.find().sort({ nev: 1 }).lean(); 
         
         res.render('crud/enekes_list', { 
             title: 'Énekesek (CRUD)', 
             enekesek: enekesek,
-            messages: res.locals.messages,
-            currentQuery: searchQuery,
-            currentSortField: sortField,
-            currentSortOrder: sortOrder
+            messages: req.session.messages || null
         });
+        req.session.messages = [];
     } catch (error) {
-        console.error('Hiba az énekesek lekérdezésekor:', error);
+        console.error(error);
         res.render('error', { message: 'Adatbázis hiba történt a listázás során.' });
     }
 });
@@ -49,7 +34,7 @@ router.get('/', async (req, res) => {
 router.get('/add', ensureAdmin, (req, res) => {
     res.render('crud/enekes_form', { 
         title: 'Új énekes hozzáadása', 
-        enekes: {},
+        enekes: {}, 
         error: null 
     });
 });
@@ -69,7 +54,7 @@ router.post('/add', ensureAdmin, async (req, res) => {
         req.session.messages = ['Új énekes sikeresen hozzáadva.'];
         res.redirect('/crud');
     } catch (error) {
-        console.error('Hiba az énekes hozzáadásakor:', error);
+        console.error(error);
         res.render('crud/enekes_form', { 
             title: 'Új énekes hozzáadása', 
             enekes: req.body, 
@@ -86,15 +71,16 @@ router.get('/edit/:id', ensureAdmin, async (req, res) => {
         }
         res.render('crud/enekes_form', { title: 'Énekes szerkesztése', enekes: enekes, error: null });
     } catch (error) {
-        console.error('Hiba a szerkesztő űrlap betöltésekor:', error);
+        console.error(error);
         res.status(500).send('Hiba a szerkesztő űrlap betöltésekor.');
     }
 });
 
 router.post('/edit/:id', ensureAdmin, async (req, res) => {
+    const { id } = req.params;
     const { nev, szulev } = req.body;
     try {
-        await Enekes.findByIdAndUpdate(req.params.id, { 
+        await Enekes.findByIdAndUpdate(id, { 
             nev: nev, 
             szulev: parseInt(szulev) 
         });
@@ -102,11 +88,11 @@ router.post('/edit/:id', ensureAdmin, async (req, res) => {
         req.session.messages = ['Énekes sikeresen frissítve.'];
         res.redirect('/crud');
     } catch (error) {
-        console.error('Hiba az énekes frissítésekor:', error);
+        console.error(error);
         res.render('crud/enekes_form', { 
             title: 'Énekes szerkesztése', 
-            enekes: { _id: req.params.id, nev, szulev }, 
-            error: 'Hiba történt a frissítés során.' 
+            enekes: { _id: id, nev, szulev }, 
+            error: 'Adatbázis hiba történt a frissítés során.' 
         });
     }
 });
@@ -122,7 +108,7 @@ router.post('/delete/:id', ensureAdmin, async (req, res) => {
         req.session.messages = ['Énekes sikeresen törölve.'];
         res.redirect('/crud');
     } catch (error) {
-        console.error('Hiba az énekes törlésekor:', error);
+        console.error(error);
         req.session.messages = ['Hiba történt a törlés során.'];
         res.redirect('/crud');
     }
