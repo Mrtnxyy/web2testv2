@@ -57,8 +57,6 @@ body, html {
   color: #ffd8ec;
 }
 
-/* --- PROFIL DROPDOWN ÉS IKON STÍLUSOK FIXÁLVA --- */
-
 .profile-dropdown {
     position: relative;
     display: inline-block;
@@ -137,8 +135,6 @@ body, html {
     background-color: #7f00ff;
 }
 
-/* --- KÖZÉPSŐ KONTÉNER ÉS TÁBLÁZAT FIXÁLVA --- */
-
 .main-content-container {
     max-width: 1000px;
     margin: 0 auto; 
@@ -163,7 +159,6 @@ h2 {
     max-width: 700px;
 }
 
-/* JAVÍTÁS: Login/Register "Nincs fiókja" szöveg igazítása */
 .auth-helper-text {
     max-width: 400px; 
     margin: 0 auto; 
@@ -171,7 +166,46 @@ h2 {
     text-align: left;
 }
 
-/* CRUD TÁBLÁZAT VÉGLEGES JAVÍTÁSA */
+.crud-controls {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 15px; 
+    margin: 20px auto 30px auto; 
+    max-width: 400px; 
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ff3aeb;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 0 10px rgba(251, 0, 255, 0.5); 
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #ffd8ec; 
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); 
+}
+
+.add-new-btn {
+    width: 100%; 
+    text-align: center;
+    background: #ff3aeb; 
+    color: #fff !important; 
+    padding: 10px 20px;
+    font-size: 1.1rem;
+}
+
+.add-new-btn:hover {
+    background: #7f00ff;
+    color: #fff !important; 
+}
 
 table {
   width: 100%;
@@ -221,8 +255,6 @@ table td:last-child {
     justify-content: flex-end;
 }
 
-/* MENTETT ÜZENET DOBOZ */
-
 .success-notification {
     position: fixed;
     bottom: 70px; 
@@ -259,8 +291,6 @@ table td:last-child {
     80% { opacity: 1; transform: translateX(0); }
     100% { opacity: 0; transform: translateX(100%); }
 }
-
-/* GOMBOK ÉS ŰRLAPOK */
 
 form {
   max-width: 400px;
@@ -332,7 +362,6 @@ table td form button:hover {
     background-color: #6a00c9;
 }
 
-/* LÁBLÉC */
 footer {
   text-align: center;
   padding: 15px 20px;
