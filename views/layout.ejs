@@ -1,346 +1,68 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Opera Archívum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  
+  <nav class="navbar">
+    
+    <div class="logo">
+        <a href="/" class="logo-link">
+            Opera Archívum
+        </a>
+    </div>
 
-body, html {
-  font-family: 'Poppins', sans-serif;
-  color: #fff; 
-  line-height: 1.6;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #000000 15%, #7f00ff 50%, #000000 85%);
-  background-attachment: fixed; 
-}
+    <ul class="nav-links">
+        <li><a href="/">Főoldal</a></li>
+        
+        <% if (!user) { %>
+          <li class="auth-link-item"><a href="/auth/register">Regisztráció</a></li>
+          <li class="auth-link-item"><a href="/auth/login" class="login-link">Bejelentkezés</a></li>
+        <% } %>
 
-.navbar {
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  padding: 10px 20px;
-  background-color: rgba(0, 0, 0, 0.5); 
-}
+        <% if (user) { %>
+          <li><a href="/crud">Énekesek (CRUD)</a></li>
+          
+          <li class="profile-dropdown">
+            <a href="#" class="profile-icon-link"> 
+                <span class="profile-icon">👤</span> 
+                Üdv, <%= user.name %>
+            </a>
+            
+            <div class="profile-dropdown-content">
+                
+                <div class="profile-info">
+                    <p><%= user.name %></p>
+                    <small><%= user.role %></small>
+                </div>
 
-.logo {
-  font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: #ffffff; 
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-}
+                <a href="/profile">Profil</a>
+                <a href="/messages">Üzenetek</a>
+                
+                <% if (user.role === 'admin') { %>
+                  <a href="/admin">Admin Kezelés</a>
+                <% } %>
+                
+                <a href="/auth/logout">Kijelentkezés</a>
+            </div>
+          </li>
+        <% } %>
+    </ul>
+  </nav>
 
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 15px;
-  flex-wrap: nowrap;
-}
+  <div class="main-content-container">
+    <main>
+      <%- body %>
+    </main>
+  </div>
 
-.nav-links li {
-    list-style: none;
-    height: 100%;
-    display: flex; 
-    align-items: center; 
-}
-
-.nav-links li a {
-  position: relative;
-  display: inline-block;
-  padding: 5px 10px;
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.nav-links li a:hover {
-  color: #ffd8ec;
-}
-
-/* --- PROFIL DROPDOWN ÉS IKON STÍLUSOK FIXÁLVA --- */
-
-.profile-dropdown {
-    position: relative;
-    display: inline-block;
-    margin-left: 10px;
-    cursor: pointer;
-}
-
-.profile-dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 120%; 
-    background-color: #000;
-    min-width: 180px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
-    z-index: 1000;
-    border-radius: 5px;
-    padding: 10px 0;
-    text-align: left;
-}
-
-.profile-dropdown:hover .profile-dropdown-content {
-    display: block;
-}
-
-.profile-dropdown a {
-    display: flex; 
-    align-items: center; 
-    padding: 5px 10px;
-    color: #fff;
-    text-decoration: none;
-}
-
-.profile-icon {
-    background: #000; 
-    color: #fff;
-    border-radius: 50%; 
-    width: 30px; 
-    height: 30px; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 700;
-    font-size: 1rem;
-    margin-right: 5px;
-}
-
-.profile-info {
-    padding: 5px 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 5px;
-}
-
-.profile-info p {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #ff3aeb;
-    margin: 0;
-}
-.profile-info small {
-    display: block;
-    font-size: 0.75rem;
-    color: #d1d5db;
-    text-transform: capitalize;
-}
-
-.profile-dropdown-content a {
-    color: white;
-    padding: 8px 15px;
-    text-decoration: none;
-    display: block;
-    font-weight: 400;
-}
-
-.profile-dropdown-content a:hover {
-    background-color: #7f00ff;
-}
-
-/* --- KÖZÉPSŐ KONTÉNER ÉS TÁBLÁZAT FIXÁLVA --- */
-
-.main-content-container {
-    max-width: 1000px;
-    margin: 0 auto; 
-    padding: 20px; 
-    padding-top: 40px; 
-    padding-bottom: 70px;
-}
-
-h2 {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #ff3aeb;
-    margin: 0 auto 20px auto; 
-}
-
-.main-content-container main h1, 
-.main-content-container main p {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 700px;
-}
-
-/* JAVÍTÁS: Login/Register "Nincs fiókja" szöveg igazítása */
-.auth-helper-text {
-    max-width: 400px; 
-    margin: 0 auto; 
-    padding: 0 30px; 
-    text-align: left;
-}
-
-/* CRUD TÁBLÁZAT VÉGLEGES JAVÍTÁSA */
-
-table {
-  width: 100%;
-  max-width: 900px;
-  margin: 10px auto;
-  border-collapse: separate;
-  border-spacing: 0 10px;
-  background-color: transparent;
-  box-shadow: none;
-}
-
-table th {
-  background-color: #7f00ff; 
-  font-weight: 600;
-  color: #fff;
-  text-transform: uppercase;
-  padding: 10px 15px; 
-  border: none;
-  border-radius: 8px 8px 0 0; 
-}
-
-table tbody tr {
-    background-color: rgba(64, 64, 64, 0.8); 
-    border-radius: 8px; 
-    overflow: hidden;
-    transition: background-color 0.3s ease;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
-}
-
-table tbody tr:hover {
-  background-color: rgba(90, 90, 90, 0.8);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-table td {
-  padding: 8px 15px; 
-  text-align: left;
-  border: none;
-  font-size: 0.95rem; 
-}
-
-table td:last-child {
-    width: 200px;
-    text-align: right;
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-}
-
-/* MENTETT ÜZENET DOBOZ */
-
-.success-notification {
-    position: fixed;
-    bottom: 70px; 
-    right: 20px;
-    padding: 15px 25px;
-    background-color: #000;
-    color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(251, 0, 255, 0.7); 
-    font-weight: 600;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.notification-close {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 1.2rem;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0 5px;
-    transition: color 0.3s;
-}
-
-.notification-close:hover {
-    color: #ff3aeb;
-}
-
-@keyframes fadeout {
-    0% { opacity: 1; transform: translateX(0); }
-    80% { opacity: 1; transform: translateX(0); }
-    100% { opacity: 0; transform: translateX(100%); }
-}
-
-/* GOMBOK ÉS ŰRLAPOK */
-
-form {
-  max-width: 400px;
-  margin: 20px auto;
-  padding: 30px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  text-align: left;
-}
-
-form label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 600;
-}
-
-form input[type="text"],
-form input[type="email"],
-form input[type="password"],
-form input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ff3aeb;
-  border-radius: 5px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
-}
-
-.btn, button[type="submit"], 
-.action-button {
-  background: #ffffff;
-  color: #000;
-  padding: 8px 16px;
-  text-decoration: none;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s ease;
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.btn:hover, button[type="submit"]:hover, .action-button:hover {
-  background: #fb00ff;
-  color: #fff;
-  box-shadow: 0 0 10px rgba(251, 0, 255, 0.7);
-  transform: translateY(-2px);
-}
-
-table td a.action-button, 
-table td form button {
-    padding: 6px 12px;
-    font-size: 0.9rem;
-    background-color: #7f00ff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-weight: 600;
-    transition: background-color 0.3s;
-    text-decoration: none;
-    display: inline-block;
-}
-
-table td a.action-button:hover,
-table td form button:hover {
-    background-color: #6a00c9;
-}
-
-/* LÁBLÉC */
-footer {
-  text-align: center;
-  padding: 15px 20px;
-  background-color: #000000;
-  color: #fff;
-  width: 100%;
-  position: fixed; 
-  bottom: 0;
-  left: 0;
-  z-index: 100;
-}
+  <footer>
+      <p>&copy; 2025 Opera Archívum. Minden jog fenntartva.</p>
+  </footer>
+</body>
+</html>
