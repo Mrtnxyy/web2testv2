@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-// MODELL IMPORTÁLÁSOK JAVÍTVA: Nagybetűvel kezdődő modulneveket használunk!
 const Enekes = require('../models/Enekes'); 
 const Mu = require('../models/Mu'); 
 const Szerep = require('../models/Szerep'); 
@@ -18,14 +17,28 @@ router.get('/', async (req, res) => {
     if (!req.session.user) {
         return res.redirect('/auth/login');
     }
-    
+
     try {
-        const enekesek = await Enekes.find().sort({ nev: 1 }).lean(); 
+        const searchQuery = req.query.q;
+        const filter = {};
+        if (searchQuery) {
+            filter.nev = { $regex: searchQuery, $options: 'i' }; 
+        }
+
+        const sortField = req.query.sortBy || 'nev'; 
+        const sortOrder = req.query.sortOrder || 1;
+        const sortOptions = {};
+        sortOptions[sortField] = sortOrder;
+
+        const enekesek = await Enekes.find(filter).sort(sortOptions).lean(); 
         
         res.render('crud/enekes_list', { 
             title: 'Énekesek (CRUD)', 
             enekesek: enekesek,
-            messages: res.locals.messages
+            messages: res.locals.messages,
+            currentQuery: searchQuery,
+            currentSortField: sortField,
+            currentSortOrder: sortOrder
         });
     } catch (error) {
         console.error('Hiba az énekesek lekérdezésekor:', error);
