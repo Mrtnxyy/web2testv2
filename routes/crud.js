@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const Enekes = require('../models/enekes'); 
-const Mu = require('../models/mu'); 
-const Szerep = require('../models/szerep'); 
-const Repertoar = require('../models/repertoar'); 
+// MODELL IMPORTÁLÁSOK JAVÍTVA: Nagybetűvel kezdődő modulneveket használunk!
+const Enekes = require('../models/Enekes'); 
+const Mu = require('../models/Mu'); 
+const Szerep = require('../models/Szerep'); 
+const Repertoar = require('../models/Repertoar'); 
 
 function ensureAdmin(req, res, next) {
     if (req.session.user && req.session.user.role === 'admin') {
@@ -24,10 +25,8 @@ router.get('/', async (req, res) => {
         res.render('crud/enekes_list', { 
             title: 'Énekesek (CRUD)', 
             enekesek: enekesek,
-            messages: res.locals.messages // FIGYELEM: Már res.locals-ból jön, NEM a sessionből
+            messages: res.locals.messages
         });
-        // req.session.messages törlése ELTÁVOLÍTVA, mert azt az indito.js kezeli.
-
     } catch (error) {
         console.error('Hiba az énekesek lekérdezésekor:', error);
         res.render('error', { message: 'Adatbázis hiba történt a listázás során.' });
