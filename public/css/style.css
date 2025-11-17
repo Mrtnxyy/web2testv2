@@ -253,12 +253,52 @@ table td {
   font-size: 0.95rem;
 }
 
+table td form {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+table td a.action-button,
+table td form button,
+table td form button[type="submit"] {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    width: 90px;
+    height: 35px;
+    background-color: #ffffff;
+    color: #000000 !important;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+table td a.action-button:hover,
+table td form button:hover,
+table td form button[type="submit"]:hover {
+    background-color: #ff3aeb;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(251, 0, 255, 0.7);
+    transform: translateY(-2px);
+}
+
 table td:last-child {
-  width: 200px;
-  text-align: right;
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
+    width: auto;
+    text-align: right;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .success-notification {
@@ -345,36 +385,6 @@ form input[type="number"] {
 .btn:hover, button[type="submit"]:hover, .action-button:hover {
   background: #fb00ff;
   color: #fff;
-  box-shadow: 0 0 10px rgba(251, 0, 255, 0.7);
-  transform: translateY(-2px);
-}
-
-table td a.action-button,
-table td form button,
-table td form button[type="submit"] {
-  padding: 6px 12px;
-  font-size: 0.9rem;
-  width: 90px;
-  height: 35px;
-  background-color: #ff3aeb;
-  color: #000 !important;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: 0.3s ease;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  cursor: pointer;
-}
-
-table td a.action-button:hover,
-table td form button:hover,
-table td form button[type="submit"]:hover {
-  background-color: #7f00ff;
-  color: #fff !important;
   box-shadow: 0 0 10px rgba(251, 0, 255, 0.7);
   transform: translateY(-2px);
 }
