@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const Enekes = require('../models/enekes'); 
-const Repertoar = require('../models/repertoar'); 
+const Enekes = require('../models/Enekes'); // Javítva: Nagy 'E'
+const Repertoar = require('../models/Repertoar'); // Javítva: Nagy 'R'
+const Mu = require('../models/Mu'); // Hozzáadva/javítva, ha ezeket is használod
+const Szerep = require('../models/Szerep'); // Hozzáadva/javítva, ha ezeket is használod
 
 function ensureAdmin(req, res, next) {
     if (req.session.user && req.session.user.role === 'admin') {
