@@ -52,49 +52,7 @@ body, html {
   color: #ffd8ec;
 }
 
-/* --- KÖZÉPSŐ KONTÉNER (A FŐ ELRENDEZÉS) --- */
-
-.main-content-container {
-    max-width: 1000px;
-    margin: 0 auto; 
-    padding: 20px; 
-    padding-top: 40px; 
-    padding-bottom: 70px;
-}
-
-h2 {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #ff3aeb;
-    margin: 0 auto 20px auto; 
-}
-
-/* --- PROFIL DROPDOWN ÉS IKON STÍLUSOK --- */
-
-.profile-dropdown {
-    position: relative;
-    display: inline-block;
-    margin-left: 10px;
-    cursor: pointer;
-}
-
-.profile-dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: #000;
-    min-width: 180px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
-    z-index: 1000;
-    border-radius: 5px;
-    padding: 10px 0;
-    text-align: left;
-}
-
-.profile-dropdown:hover .profile-dropdown-content {
-    display: block;
-}
+/* --- PROFILIKON FLEXBOX FIX (GARANTÁLT EGY SORBAN) --- */
 
 .profile-dropdown a {
     display: flex; 
@@ -116,6 +74,23 @@ h2 {
     font-weight: 700;
     font-size: 1rem;
     margin-right: 5px;
+}
+
+.profile-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #000;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 1000;
+    border-radius: 5px;
+    padding: 10px 0;
+    text-align: left;
+}
+
+.profile-dropdown:hover .profile-dropdown-content {
+    display: block;
 }
 
 .profile-info {
@@ -149,29 +124,34 @@ h2 {
     background-color: #7f00ff;
 }
 
-/* --- ÚJ: MENTETT ÜZENET FIXÁLÁSA --- */
+/* --- KÖZÉPSŐ KONTÉNER ÉS TARTALOM --- */
 
-.notification-box {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 25px;
-    background-color: #000000;
-    color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(251, 0, 255, 0.5);
-    font-weight: 600;
-    z-index: 1000;
-    animation: fadeout 5s forwards;
+.main-content-container {
+    max-width: 1000px;
+    margin: 0 auto; 
+    padding: 20px; 
+    padding-top: 40px; 
+    padding-bottom: 70px;
 }
 
-@keyframes fadeout {
-    0% { opacity: 1; transform: translateX(0); }
-    80% { opacity: 1; transform: translateX(0); }
-    100% { opacity: 0; transform: translateX(100%); }
+h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ff3aeb;
+    margin: 0 auto 20px auto; 
 }
 
-/* --- TÁBLÁZATOK (CRUD LISTA) JAVÍTÁSA --- */
+/* Az Üdvözlő szöveg igazítása */
+.main-content-container main h1, 
+.main-content-container main p {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 700px;
+}
+
+/* --- TÁBLÁZATOK (CRUD LISTA) --- */
 
 table {
   width: 100%;
@@ -218,7 +198,29 @@ table td:last-child {
     justify-content: flex-end;
 }
 
-/* --- ŰRLAPOK ÉS GOMBOK --- */
+/* --- MENTETT ÜZENET FIXÁLÁSA --- */
+
+.notification-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(251, 0, 255, 0.5);
+    font-weight: 600;
+    z-index: 1000;
+    animation: fadeout 5s forwards;
+}
+
+@keyframes fadeout {
+    0% { opacity: 1; transform: translateX(0); }
+    80% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(100%); }
+}
+
+/* --- GOMBOK ÉS ŰRLAPOK --- */
 
 form {
   max-width: 400px;
