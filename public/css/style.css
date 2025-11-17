@@ -354,10 +354,11 @@ table td form button {
     font-weight: 600;
     transition: background-color 0.3s;
     text-decoration: none;
-    display: inline-flex;
+    width: 90px; 
+    height: 35px; 
+    display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 80px;
     box-sizing: border-box;
 }
 
