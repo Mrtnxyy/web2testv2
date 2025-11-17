@@ -3,12 +3,85 @@
 <head>
   <meta charset="utf-8">
   <title>Opera Archívum</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
   <link rel="stylesheet" href="/css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Egyedi CSS a Profil Dropdown-hoz */
+    .profile-dropdown {
+        position: relative;
+        display: inline-block;
+        margin-left: 10px;
+        cursor: pointer;
+    }
+    
+    .profile-dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #000; /* Fekete háttér */
+        min-width: 180px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+        z-index: 1000;
+        border-radius: 5px;
+        padding: 10px 0;
+        text-align: left;
+    }
+
+    .profile-dropdown:hover .profile-dropdown-content {
+        display: block;
+    }
+
+    .profile-info {
+        padding: 5px 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 5px;
+    }
+
+    .profile-info p {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #ff3aeb; /* Élénk szín */
+        margin: 0;
+    }
+    .profile-info small {
+        display: block;
+        font-size: 0.75rem;
+        color: #d1d5db; /* Halvány szín */
+        text-transform: capitalize;
+    }
+
+    .profile-dropdown-content a {
+        color: white;
+        padding: 8px 15px;
+        text-decoration: none;
+        display: block;
+        font-weight: 400;
+    }
+
+    .profile-dropdown-content a:hover {
+        background-color: #7f00ff;
+    }
+
+    /* Ikon stílusa */
+    .profile-icon {
+        background: #fff;
+        color: #000;
+        border-radius: 50%;
+        padding: 5px 10px;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-right: 5px;
+        display: inline-block;
+    }
+  </style>
+
 </head>
 <body>
   
   <nav class="navbar">
+    
     <div class="logo">
         <a href="/" style="color: inherit; text-decoration: none;">
             Opera Archívum
@@ -17,20 +90,39 @@
 
     <ul class="nav-links">
         <li><a href="/">Főoldal</a></li>
-        <li><a href="/adatbazis">Adatbázis</a></li>
-        <li><a href="/contact">Kapcsolat</a></li>
-        <li><a href="/crud">Énekesek (CRUD)</a></li>
         
         <% if (!user) { %>
           <li><a href="/auth/register">Regisztráció</a></li>
           <li><a href="/auth/login">Bejelentkezés</a></li>
-        <% } else { %>
-          <li style="color: #fff; padding: 5px 0;">Üdv, <%= user.name %></li>
-          <li><a href="/messages">Üzenetek</a></li>
-          <% if (user.role === 'admin') { %>
-            <li><a href="/admin">Admin Kezelés</a></li>
-          <% } %>
-          <li><a href="/auth/logout">Kijelentkezés</a></li>
+        <% } %>
+
+        <% if (user) { %>
+          <li><a href="/crud">Énekesek (CRUD)</a></li>
+          
+          <li class="profile-dropdown">
+            <a href="#" style="padding: 5px 0;">
+                <span class="profile-icon">👤</span>
+                Üdv, <%= user.name %>
+            </a>
+            
+            <div class="profile-dropdown-content">
+                
+                <div class="profile-info">
+                    <p><%= user.name %></p>
+                    <small><%= user.role %></small>
+                </div>
+
+                <a href="/profile">Profil</a>
+
+                <a href="/messages">Üzenetek</a>
+                
+                <% if (user.role === 'admin') { %>
+                  <a href="/admin">Admin Kezelés</a>
+                <% } %>
+                
+                <a href="/auth/logout">Kijelentkezés</a>
+            </div>
+          </li>
         <% } %>
     </ul>
   </nav>
