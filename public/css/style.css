@@ -1,4 +1,3 @@
-/* --- ALAP BEÁLLÍTÁSOK --- */
 * {
   margin: 0;
   padding: 0;
@@ -14,7 +13,6 @@ body, html {
   background-attachment: fixed; 
 }
 
-/* --- NAVIGÁCIÓ ÉS FŐ ELRENDEZÉS --- */
 .navbar {
   display: flex; 
   justify-content: space-between; 
@@ -38,6 +36,13 @@ body, html {
   flex-wrap: nowrap;
 }
 
+.nav-links li {
+    list-style: none;
+    height: 100%;
+    display: flex; 
+    align-items: center; 
+}
+
 .nav-links li a {
   position: relative;
   display: inline-block;
@@ -52,12 +57,19 @@ body, html {
   color: #ffd8ec;
 }
 
-/* --- PROFILIKON FLEXBOX FIX (GARANTÁLT EGY SORBAN) --- */
+/* PROFILIKON FLEXBOX FIX */
+
+.profile-dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 10px;
+    cursor: pointer;
+}
 
 .profile-dropdown a {
-    display: flex; 
-    align-items: center; 
-    padding: 5px 0; 
+    display: flex !important; 
+    align-items: center !important; 
+    padding: 5px 10px !important;
     color: #fff;
     text-decoration: none;
 }
@@ -116,15 +128,16 @@ body, html {
     color: white;
     padding: 8px 15px;
     text-decoration: none;
-    display: block;
+    display: block !important; 
     font-weight: 400;
+    width: 100%;
 }
 
 .profile-dropdown-content a:hover {
     background-color: #7f00ff;
 }
 
-/* --- KÖZÉPSŐ KONTÉNER ÉS TARTALOM --- */
+/* KÖZÉPSŐ KONTÉNER ÉS TARTALOM */
 
 .main-content-container {
     max-width: 1000px;
@@ -142,7 +155,6 @@ h2 {
     margin: 0 auto 20px auto; 
 }
 
-/* Az Üdvözlő szöveg igazítása */
 .main-content-container main h1, 
 .main-content-container main p {
     text-align: center;
@@ -151,7 +163,7 @@ h2 {
     max-width: 700px;
 }
 
-/* --- TÁBLÁZATOK (CRUD LISTA) --- */
+/* TÁBLÁZATOK (CRUD LISTA) */
 
 table {
   width: 100%;
@@ -198,7 +210,7 @@ table td:last-child {
     justify-content: flex-end;
 }
 
-/* --- MENTETT ÜZENET FIXÁLÁSA --- */
+/* MENTETT ÜZENET FIXÁLÁSA */
 
 .notification-box {
     position: fixed;
@@ -220,7 +232,7 @@ table td:last-child {
     100% { opacity: 0; transform: translateX(100%); }
 }
 
-/* --- GOMBOK ÉS ŰRLAPOK --- */
+/* GOMBOK ÉS ŰRLAPOK */
 
 form {
   max-width: 400px;
@@ -296,7 +308,7 @@ table td form button:hover {
 }
 
 
-/* --- LÁBLÉC --- */
+/* LÁBLÉC */
 footer {
   text-align: center;
   padding: 15px 20px;
