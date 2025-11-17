@@ -57,7 +57,7 @@ body, html {
   color: #ffd8ec;
 }
 
-/* --- PROFILIKON ÉS DROPDOWN STÍLUSOK FIXÁLVA --- */
+/* --- PROFIL DROPDOWN ÉS IKON STÍLUSOK FIXÁLVA --- */
 
 .profile-dropdown {
     position: relative;
@@ -137,7 +137,7 @@ body, html {
     background-color: #7f00ff;
 }
 
-/* --- KÖZÉPSŐ KONTÉNER ÉS TARTALOM --- */
+/* --- KÖZÉPSŐ KONTÉNER ÉS TÁBLÁZAT FIXÁLVA --- */
 
 .main-content-container {
     max-width: 1000px;
@@ -163,12 +163,20 @@ h2 {
     max-width: 700px;
 }
 
-/* --- TÁBLÁZATOK (CRUD LISTA) VÉGLEGES JAVÍTÁSA --- */
+/* JAVÍTÁS: Login/Register "Nincs fiókja" szöveg igazítása */
+.auth-helper-text {
+    max-width: 400px; 
+    margin: 0 auto; 
+    padding: 0 30px; 
+    text-align: left;
+}
+
+/* CRUD TÁBLÁZAT VÉGLEGES JAVÍTÁSA */
 
 table {
   width: 100%;
   max-width: 900px;
-  margin: 20px auto;
+  margin: 10px auto;
   border-collapse: separate;
   border-spacing: 0 10px;
   background-color: transparent;
@@ -186,7 +194,7 @@ table th {
 }
 
 table tbody tr {
-    background-color: rgba(64, 64, 64, 0.6); 
+    background-color: rgba(64, 64, 64, 0.8); 
     border-radius: 8px; 
     overflow: hidden;
     transition: background-color 0.3s ease;
@@ -213,7 +221,7 @@ table td:last-child {
     justify-content: flex-end;
 }
 
-/* --- MENTETT ÜZENET DOBOZ --- */
+/* MENTETT ÜZENET DOBOZ */
 
 .success-notification {
     position: fixed;
@@ -252,7 +260,7 @@ table td:last-child {
     100% { opacity: 0; transform: translateX(100%); }
 }
 
-/* --- GOMBOK ÉS ŰRLAPOK --- */
+/* GOMBOK ÉS ŰRLAPOK */
 
 form {
   max-width: 400px;
@@ -305,12 +313,11 @@ form input[type="number"] {
   transform: translateY(-2px);
 }
 
-/* CRUD akció gombok (Szerkesztés és Törlés) Egységesítve */
 table td a.action-button, 
 table td form button {
     padding: 6px 12px;
     font-size: 0.9rem;
-    background-color: #7f00ff; /* Egységes Lila Háttér */
+    background-color: #7f00ff;
     color: #fff;
     border: none;
     border-radius: 4px;
