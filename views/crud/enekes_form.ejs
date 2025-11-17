@@ -5,8 +5,6 @@
 <% } %>
 
 <% 
-    // Meghatározzuk az URL-t (action) és a metódust (mindig POST)
-    // Ha az 'enekes' objektumnak van MongoDB azonosítója (_id), akkor Szerkesztés, különben Új hozzáadás.
     const formAction = enekes._id ? `/crud/edit/${enekes._id}` : '/crud/add';
 %>
 
@@ -18,5 +16,5 @@
     <input type="number" id="szulev" name="szulev" value="<%= enekes.szulev || '' %>" required><br><br>
     
     <button type="submit">Mentés</button>
-    <a href="/crud">Mégsem (Vissza a listához)</a>
+    <a href="/crud" class="btn">Mégsem (Vissza a listához)</a>
 </form>
