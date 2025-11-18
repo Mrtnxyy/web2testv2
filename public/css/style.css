@@ -381,6 +381,7 @@ form input[type="number"] {
   display: inline-block;
   margin-right: 10px;
   margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 .btn:hover, button[type="submit"]:hover, .action-button:hover {
