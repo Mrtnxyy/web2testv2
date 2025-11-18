@@ -380,6 +380,7 @@ form input[type="number"] {
   transition: 0.3s ease;
   display: inline-block;
   margin-right: 10px;
+  margin-bottom: 15px;
 }
 
 .btn:hover, button[type="submit"]:hover, .action-button:hover {
