@@ -1,0 +1,7 @@
+<% layout('layout') %>
+<h2><%= item ? 'Énekes szerkesztése' : 'Új énekes' %></h2>
+<form method='post' action='<%= item ? '/crud/' + item.id + '?_method=PUT' : '/crud/new' %>'>
+<label>Név</label><br><input name='name' value='<%= item ? item.nev : '' %>' required><br>
+<label>Születési év</label><br><input name='szulev' value='<%= item ? item.szulev : '' %>' required><br>
+<button type='submit'>Mentés</button>
+</form>

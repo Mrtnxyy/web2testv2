@@ -1,0 +1,10 @@
+<% layout('layout') %>
+<h2>Énekesek listája</h2>
+<% if (user && user.role === 'admin') { %><a href='/crud/new'>Új énekes</a><% } %>
+<table border='1'><tr><th>ID</th><th>Név</th><th>Születési év</th><th>Műveletek</th></tr>
+<% items.forEach(i => { %>
+<tr><td><%= i.id %></td><td><%= i.nev %></td><td><%= i.szulev %></td>
+<td><a href='/crud/<%= i.id %>'>Megtekint</a> <% if (user && user.role==='admin') { %> | <a href='/crud/<%= i.id %>/edit'>Szerkeszt</a>
+<form method='post' action='/crud/<%= i.id %>?_method=DELETE' style='display:inline'><button type='submit'>Töröl</button></form>
+<% } %></td></tr>
+<% }) %></table>
