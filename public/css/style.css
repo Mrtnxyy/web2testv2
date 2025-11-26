@@ -326,7 +326,7 @@ h1, h2, h3 {
     color: #fff;
 }
 
-/* --- TÁBLÁZATOK ÉS BELSŐ OLDALAK (CRUD - JAVÍTOTT) --- */
+/* --- TÁBLÁZATOK ÉS BELSŐ OLDALAK (CRUD) --- */
 
 .crud-container {
   max-width: 1000px;
@@ -462,7 +462,7 @@ footer {
   text-align: center;
 }
 
-/* --- DROPDOWN (PROFIL MENÜ - JAVÍTOTT) --- */
+/* --- DROPDOWN (PROFIL MENÜ) --- */
 .profile-dropdown {
   position: relative;
   cursor: pointer;
@@ -492,7 +492,7 @@ footer {
   right: 0;
   top: 100%;
   background-color: var(--dark-panel);
-  min-width: 200px; /* Szélesebb lett */
+  min-width: 200px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.5);
   z-index: 1000;
   border: 1px solid var(--gold);
@@ -540,8 +540,8 @@ footer {
 /* Menüpont hover - SÖTÉT SZÖVEGGEL */
 .profile-dropdown-content a:hover {
   background-color: var(--gold);
-  color: var(--dark-bg) !important; /* Itt a javítás: fekete szöveg sárga alapon */
-  padding-left: 25px; /* Kis animáció jobbra */
+  color: var(--dark-bg) !important;
+  padding-left: 25px;
 }
 
 /* Animáció */
@@ -554,4 +554,47 @@ footer {
   .hero-content h1 { font-size: 2.5rem; }
   .grid-container { flex-direction: column; align-items: center; }
   .auth-card { width: 90%; }
+}
+
+/* ========================================= */
+/* --- VÉGSŐ JAVÍTÁSOK (Gombok & Inputok) --- */
+/* ========================================= */
+
+/* 1. Hogy az "Új énekes" gomb szövege FEKETE legyen és olvasható */
+.add-new-btn {
+    background-color: var(--gold) !important;
+    color: #000 !important; /* Fekete szöveg a sárga gombom */
+    font-weight: bold;
+    border: 1px solid var(--gold);
+    padding: 12px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.add-new-btn:hover {
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+/* 2. Hogy az Input mezők (kereső, szerkesztő) szövege FEHÉR legyen és látható */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+.search-input {
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.1) !important; /* Enyhén átlátszó háttér */
+    border: 1px solid var(--gold) !important; /* Arany keret */
+    color: #fff !important; /* Fehér betű */
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }

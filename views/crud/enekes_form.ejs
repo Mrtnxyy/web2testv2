@@ -1,20 +1,35 @@
-<h2><%= enekes._id ? 'Énekes szerkesztése' : 'Új énekes hozzáadása' %></h2>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        
+        <h2><%= enekes._id ? 'Énekes szerkesztése' : 'Új énekes hozzáadása' %></h2>
 
-<% if (error) { %>
-    <p style="color: red;">Hiba: <%= error %></p>
-<% } %>
+        <% if (error) { %>
+            <div class="error-message">
+                <%= error %>
+            </div>
+        <% } %>
 
-<% 
-    const formAction = enekes._id ? `/crud/edit/${enekes._id}` : '/crud/add';
-%>
+        <% 
+            const formAction = enekes._id ? `/crud/edit/${enekes._id}` : '/crud/add';
+        %>
 
-<form method="POST" action="<%= formAction %>">
-    <label for="nev">Név:</label><br>
-    <input type="text" id="nev" name="nev" value="<%= enekes.nev || '' %>" required><br><br>
+        <form method="POST" action="<%= formAction %>">
+            <div class="form-group">
+                <label for="nev">Név:</label>
+                <input type="text" id="nev" name="nev" value="<%= enekes.nev || '' %>" placeholder="Énekes neve" required>
+            </div>
 
-    <label for="szulev">Születési év:</label><br>
-    <input type="number" id="szulev" name="szulev" value="<%= enekes.szulev || '' %>" required><br><br>
-    
-    <button type="submit">Mentés</button>
-    <a href="/crud" class="btn">Mégsem (Vissza a listához)</a>
-</form>
+            <div class="form-group">
+                <label for="szulev">Születési év:</label>
+                <input type="number" id="szulev" name="szulev" value="<%= enekes.szulev || '' %>" placeholder="Pl. 1975" required>
+            </div>
+            
+            <button type="submit" class="btn-submit">Mentés</button>
+            
+            <div class="auth-footer" style="border: none; padding-top: 10px;">
+                <a href="/crud">Mégsem (Vissza a listához)</a>
+            </div>
+        </form>
+
+    </div>
+</div>
