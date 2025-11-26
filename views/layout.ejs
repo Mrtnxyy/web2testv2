@@ -5,14 +5,14 @@
   <title>Opera Archívum</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
   <link rel="stylesheet" href="/css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   
   <nav class="navbar">
     
     <div class="logo">
-        <a class="logo-link">
+        <a href="/" class="logo-link">
             Opera Archívum
         </a>
     </div>
@@ -26,12 +26,12 @@
         <% } %>
 
         <% if (user) { %>
-          <li><a href="/crud">Énekesek (CRUD)</a></li>
+          <li><a href="/crud">Énekesek Adatbázisa</a></li>
           
           <li class="profile-dropdown">
             <a href="#" class="profile-icon-link"> 
                 <span class="profile-icon">👤</span> 
-                Üdv, <%= user.name %>
+                <%= user.name %>
             </a>
             
             <div class="profile-dropdown-content">
@@ -62,7 +62,7 @@
   </div>
 
   <footer>
-      <p>&copy; 2025 Opera Archívum. Minden jog fenntartva.</p>
+      <p>&copy; 2025 Opera Archívum. A zene örök.</p>
   </footer>
 </body>
 </html>

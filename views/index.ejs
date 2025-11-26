@@ -1,4 +1,41 @@
-<section>
-  <h1>Opera Archívum</h1>
-  <p>Üdvözöljük az Opera Archívum weboldalán. Itt megtekintheti a műveket, szerepeket és az énekesek repertoárját.</p>
+<section class="hero-section">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+      <h1>Opera Archívum</h1>
+      <p class="hero-subtitle">"Ahol a zene drámává válik."</p>
+      <p class="hero-description">
+        Lépjen be a klasszikus zene legmagasztosabb világába. 
+        Fedezze fel a halhatatlan műveket, a legendás szerepeket és az énekesek repertoárját.
+      </p>
+      <% if (!user) { %>
+        <a href="/auth/register" class="cta-button">Csatlakozzon a közönséghez</a>
+      <% } else { %>
+        <a href="/crud" class="cta-button">Böngészés az adatbázisban</a>
+      <% } %>
+  </div>
+</section>
+
+<section class="intro-section">
+  <div class="section-header">
+      <h2>Gyűjteményünk</h2>
+      <div class="divider-gold"></div>
+  </div>
+  
+  <div class="grid-container">
+      <div class="card">
+          <div class="card-icon">🎭</div>
+          <h3>Művek</h3>
+          <p>Barokk ritkaságoktól a romantika grandiózus operáiig. Ismerje meg a történeteket és a hátteret.</p>
+      </div>
+      <div class="card">
+          <div class="card-icon">📜</div>
+          <h3>Szerepek</h3>
+          <p>A dráma hősei. Tudjon meg többet a szoprán, tenor, bariton és basszus szerepkörökről.</p>
+      </div>
+      <div class="card">
+          <div class="card-icon">🎤</div>
+          <h3>Énekesek</h3>
+          <p>Legendás hangok és feltörekvő tehetségek adatbázisa. Kövesse nyomon kedvenceit.</p>
+      </div>
+  </div>
 </section>
