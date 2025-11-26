@@ -1,19 +1,29 @@
-<h2>Bejelentkezés</h2>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <h2>Bejelentkezés</h2>
 
-<% if (error) { %>
-    <p style='color:red'><%= error %></p>
-<% } %>
+        <% if (error) { %>
+            <div class="error-message">
+                <%= error %>
+            </div>
+        <% } %>
 
-<form method='post' action='/auth/login'>
-    <label for='email'>E-mail:</label><br>
-    <input type='email' id='email' name='email' required><br><br>
+        <form method="post" action="/auth/login">
+            <div class="form-group">
+                <label for="email">E-mail cím</label>
+                <input type="email" id="email" name="email" placeholder="pelda@opera.hu" required>
+            </div>
 
-    <label for='password'>Jelszó:</label><br>
-    <input type='password' id='password' name='password' required><br><br>
+            <div class="form-group">
+                <label for="password">Jelszó</label>
+                <input type="password" id="password" name="password" placeholder="Jelszó" required>
+            </div>
 
-    <button type='submit'>Bejelentkezés</button>
-</form>
+            <button type="submit" class="btn-submit">Belépés</button>
+        </form>
 
-<p>
-    Még nincs fiókja? <a href="/auth/register">Regisztráljon itt.</a>
-</p>
+        <div class="auth-footer">
+            <p>Még nincs fiókja? <a href="/auth/register">Regisztráljon itt.</a></p>
+        </div>
+    </div>
+</div>
