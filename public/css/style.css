@@ -435,6 +435,7 @@ table td {
     padding: 15px;
 }
 
+/* (Ezeket lecseréljük az új specifikus gomb stílusokra a fájl végén) */
 .action-button, 
 table td form button {
   padding: 5px 10px;
@@ -557,7 +558,7 @@ footer {
 }
 
 /* ========================================= */
-/* --- VÉGSŐ JAVÍTÁSOK (Gombok & Inputok) --- */
+/* --- VÉGSŐ JAVÍTÁSOK (Inputok & Gombok) --- */
 /* ========================================= */
 
 /* 1. Hogy az "Új énekes" gomb szövege FEKETE legyen és olvasható */
@@ -597,4 +598,56 @@ input:focus {
     outline: none;
     background-color: rgba(255, 255, 255, 0.2) !important;
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+/* ========================================= */
+/* --- TÁBLÁZAT GOMBOK (Szerkesztés & Törlés) --- */
+/* ========================================= */
+
+/* Közös alap beállítások a gombokhoz */
+table .action-button {
+    padding: 6px 15px;      /* Kicsit kisebb padding, hogy elférjen */
+    font-weight: 700;       /* Vastag betű */
+    text-transform: uppercase;
+    font-size: 0.75rem;     /* Kisebb betűméret */
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 1px;
+    min-width: 100px;       /* Egyforma szélesek legyenek */
+}
+
+/* 1. SZERKESZTÉS GOMB (Arany - Mint a fenti nagy gomb) */
+/* Ez az <a> tag a táblázatban */
+table td a.action-button {
+    background-color: var(--gold) !important;
+    color: #0b0b15 !important; /* Fekete/Sötét szöveg */
+    border: 1px solid var(--gold);
+}
+
+table td a.action-button:hover {
+    background-color: #fff !important; /* Fehérre vált, ha ráviszed az egeret */
+    border-color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* 2. TÖRLÉS GOMB (Elegáns Vörös) */
+/* Ez a <button> tag a formban */
+table td form button.action-button {
+    background-color: rgba(100, 0, 0, 0.6) !important; /* Átlátszó sötétvörös */
+    color: #ff9999 !important; /* Halvány vörös szöveg */
+    border: 1px solid #ff4d4d !important;
+    margin-left: 8px; /* Kis távolság a szerkesztéstől */
+}
+
+table td form button.action-button:hover {
+    background-color: #ff3333 !important; /* Élénk vörös hover */
+    color: #fff !important; /* Fehér szöveg */
+    border-color: #ff3333 !important;
+    box-shadow: 0 0 10px rgba(255, 50, 50, 0.6);
 }
