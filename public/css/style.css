@@ -404,36 +404,86 @@ footer {
   text-align: center;
 }
 
-/* --- DROPDOWN --- */
+/* --- DROPDOWN (PROFIL MENÜ - JAVÍTOTT) --- */
 .profile-dropdown {
   position: relative;
   cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.profile-icon-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background 0.3s;
+  color: #fff;
+  text-decoration: none;
+}
+
+.profile-icon-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .profile-dropdown-content {
   display: none;
   position: absolute;
   right: 0;
+  top: 100%;
   background-color: var(--dark-panel);
-  min-width: 160px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+  min-width: 200px; /* Szélesebb lett */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
   z-index: 1000;
-  border: 1px solid #333;
+  border: 1px solid var(--gold);
+  border-radius: 0 0 4px 4px;
+  overflow: hidden;
 }
 
 .profile-dropdown:hover .profile-dropdown-content {
   display: block;
 }
 
-.profile-dropdown-content a {
-  padding: 12px 16px;
-  display: block;
-  color: #fff;
+/* Fejléc rész (Admin név) */
+.profile-info {
+  padding: 15px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  text-align: center;
+  background-color: rgba(0,0,0,0.2);
 }
 
+.profile-info p {
+  color: var(--gold);
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 2px;
+  font-size: 1rem;
+}
+
+.profile-info small {
+  color: #aaa;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Menüpontok */
+.profile-dropdown-content a {
+  padding: 12px 20px;
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Menüpont hover - SÖTÉT SZÖVEGGEL */
 .profile-dropdown-content a:hover {
   background-color: var(--gold);
-  color: var(--dark-bg);
+  color: var(--dark-bg) !important; /* Itt a javítás: fekete szöveg sárga alapon */
+  padding-left: 25px; /* Kis animáció jobbra */
 }
 
 /* Animáció */
