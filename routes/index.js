@@ -96,8 +96,14 @@ router.get('/admin', async (req, res) => {
     try {
         const users = await User.find().sort({ created_at: -1 });
         const admins = users.filter(u => u.role === 'admin');
-        res.render('admin', { allUsers: users, admins: admins, currentUser: req.session.user });
+        
+        res.render('admin', { 
+            allUsers: users, 
+            admins: admins, 
+            currentUser: req.session.user 
+        });
     } catch (err) {
+        console.error(err);
         res.redirect('/');
     }
 });
@@ -107,11 +113,13 @@ router.post('/admin/toggle-role', async (req, res) => {
         return res.status(403).json({ error: 'Nincs jogosultságod!' });
     }
 
-    const { userId, newRole } = req.body;
+    let { userId, newRole } = req.body;
+
+    if (userId) userId = userId.trim();
 
     try {
         const userToModify = await User.findById(userId);
-        
+
         if (!userToModify) {
             return res.status(404).json({ error: 'Felhasználó nem található!' });
         }
@@ -119,7 +127,6 @@ router.post('/admin/toggle-role', async (req, res) => {
         if (userToModify.email === req.session.user.email) {
             return res.status(400).json({ error: 'Saját magadtól nem veheted el a jogot!' });
         }
-
         await User.findByIdAndUpdate(userId, { role: newRole });
         res.json({ success: true });
 
@@ -138,6 +145,7 @@ router.get('/adatbazis', async (req, res) => {
 
         const enekesAdatok = enekesek.map(enekes => {
             const sajatRepertoar = repertoar.filter(r => r.enekesid === enekes.id);
+            
             const szerepLista = sajatRepertoar.map(rep => {
                 const szerep = szerepek.find(sz => sz.id === rep.szerepid);
                 if (!szerep) return null;
@@ -153,7 +161,8 @@ router.get('/adatbazis', async (req, res) => {
         });
         res.render('adatbazis_lista', { enekesek: enekesAdatok.slice(0, 100) });
     } catch (err) {
-        res.status(500).send('Hiba');
+        console.error(err);
+        res.status(500).send('Hiba történt az adatok betöltésekor.');
     }
 });
 
