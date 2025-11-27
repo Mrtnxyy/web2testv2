@@ -20,13 +20,15 @@
     <ul class="nav-links">
         <li><a href="/">Főoldal</a></li>
         
+        <li><a href="/adatbazis">Repertoár (Adatbázis)</a></li>
+        
         <% if (!user) { %>
           <li class="auth-link-item"><a href="/auth/register">Regisztráció</a></li>
           <li class="auth-link-item"><a href="/auth/login" class="login-link">Bejelentkezés</a></li>
         <% } %>
 
         <% if (user) { %>
-          <li><a href="/crud">Énekesek Adatbázisa</a></li>
+          <li><a href="/crud">Énekesek (CRUD)</a></li>
           
           <li class="profile-dropdown">
             <a href="#" class="profile-icon-link"> 
@@ -44,8 +46,8 @@
                 <a href="/profile">Profil</a>
                 
                 <% if (user.role === 'admin') { %>
-                    <a href="/messages">Üzenetek</a>
-                    <a href="/admin">Admin Kezelés</a>
+                  <a href="/messages">Üzenetek</a>
+                  <a href="/admin">Admin Kezelés</a>
                 <% } %>
                 
                 <a href="/auth/logout">Kijelentkezés</a>
