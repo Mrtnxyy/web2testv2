@@ -21,6 +21,7 @@
         <li><a href="/">Főoldal</a></li>
         
         <li><a href="/adatbazis">Repertoár (Adatbázis)</a></li>
+        <li><a href="/crud">Énekesek (CRUD)</a></li>
         
         <% if (!user) { %>
           <li class="auth-link-item"><a href="/auth/register">Regisztráció</a></li>
@@ -28,7 +29,6 @@
         <% } %>
 
         <% if (user) { %>
-          <li><a href="/crud">Énekesek (CRUD)</a></li>
           
           <li class="profile-dropdown">
             <a href="#" class="profile-icon-link"> 

@@ -54,15 +54,25 @@ h1, h2, h3 {
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 20px;
+  gap: 25px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .nav-links li a {
   color: var(--text-light);
   text-decoration: none;
-  font-weight: 400;
-  font-size: 0.95rem;
+  font-weight: 500;
+  font-size: 1rem;
   transition: color 0.3s ease;
+  display: inline-block;
 }
 
 .nav-links li a:hover {
@@ -443,29 +453,39 @@ footer {
 .profile-icon-link {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 5px 10px;
-  border-radius: 4px;
-  transition: background 0.3s;
-  color: #fff;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 15px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  color: #fff !important;
   text-decoration: none;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
 }
 
 .profile-icon-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(212, 175, 55, 0.15);
+  border-color: var(--gold);
+  color: var(--gold) !important;
+}
+
+.profile-icon {
+    font-size: 1.2rem;
+    line-height: 1;
 }
 
 .profile-dropdown-content {
   display: none;
   position: absolute;
   right: 0;
-  top: 100%;
+  top: 120%;
   background-color: var(--dark-panel);
   min-width: 200px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.5);
   z-index: 1000;
   border: 1px solid var(--gold);
-  border-radius: 0 0 4px 4px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
