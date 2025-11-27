@@ -35,17 +35,33 @@ router.get('/profile', (req, res) => {
     res.render('profile', { user: req.session.user });
 });
 
-// --- ÜZENETEK (Csak Adminnak) ---
+// --- ÜZENETEK LISTÁZÁSA (Csak Adminnak) ---
 router.get('/messages', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.redirect('/');
     }
     try {
         const messages = await Message.find().sort({ created_at: -1 });
-        res.render('messages', { messages });
+        // Flash üzenet kezelése törlés után
+        const successMsg = req.query.msg === 'deleted' ? 'Üzenet törölve!' : null;
+        res.render('messages', { messages, successMsg });
     } catch (err) {
         console.error(err);
-        res.render('messages', { messages: [] });
+        res.render('messages', { messages: [], successMsg: null });
+    }
+});
+
+// --- ÚJ: ÜZENET TÖRLÉSE (Csak Adminnak) ---
+router.post('/messages/delete/:id', async (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/');
+    }
+    try {
+        await Message.findByIdAndDelete(req.params.id);
+        res.redirect('/messages?msg=deleted');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/messages');
     }
 });
 
@@ -59,7 +75,6 @@ router.get('/admin', async (req, res) => {
         const users = await User.find().sort({ created_at: -1 });
         const admins = users.filter(u => u.role === 'admin');
         
-        // Átadjuk a currentUser-t is a védelemhez (hogy tudd, ki vagy te)
         res.render('admin', { 
             allUsers: users, 
             admins: admins,
@@ -71,7 +86,7 @@ router.get('/admin', async (req, res) => {
     }
 });
 
-// --- ADMIN: JOGOSULTSÁG VÁLTÁS (API) ---
+// --- ADMIN: JOGOSULTSÁG VÁLTÁS ---
 router.post('/admin/toggle-role', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.status(403).json({ error: 'Nincs jogosultságod' });
@@ -79,7 +94,6 @@ router.post('/admin/toggle-role', async (req, res) => {
 
     const { userId, newRole } = req.body;
 
-    // VÉDELEM: Ne vehesse el a saját jogát!
     if (String(userId) === String(req.session.user._id)) {
         return res.status(400).json({ error: 'Saját magadtól nem veheted el a jogot!' });
     }
@@ -93,21 +107,17 @@ router.post('/admin/toggle-role', async (req, res) => {
     }
 });
 
-// --- REPERTOÁR / ADATBÁZIS LISTA (3 tábla összekapcsolása) ---
+// --- REPERTOÁR / ADATBÁZIS LISTA ---
 router.get('/adatbazis', async (req, res) => {
     try {
-        // Adatok lekérése
         const enekesek = await Enekes.find().sort({ nev: 1 }).lean();
         const repertoar = await Repertoar.find().lean();
         const szerepek = await Szerep.find().lean();
         const muvek = await Mu.find().lean();
 
-        // Adatok összekapcsolása (Data Mapping)
         const enekesAdatok = enekesek.map(enekes => {
-            // 1. Megkeressük a hozzá tartozó repertoár elemeket
             const sajatRepertoar = repertoar.filter(r => r.enekesid === enekes.id);
             
-            // 2. A repertoár ID-k alapján megkeressük a Szerepet és a Művet
             const szerepLista = sajatRepertoar.map(rep => {
                 const szerep = szerepek.find(sz => sz.id === rep.szerepid);
                 if (!szerep) return null;
@@ -128,7 +138,6 @@ router.get('/adatbazis', async (req, res) => {
             };
         });
 
-        // Megjelenítés (az első 100 találat, hogy gyors legyen)
         res.render('adatbazis_lista', { enekesek: enekesAdatok.slice(0, 100) });
 
     } catch (err) {

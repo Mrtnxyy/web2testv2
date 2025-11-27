@@ -1,14 +1,53 @@
 <div class="crud-container">
     <h1 class="page-title">Beérkezett Üzenetek</h1>
 
+    <% if (typeof successMsg !== 'undefined' && successMsg) { %>
+        <div id="toast-box" class="toast-notification">
+            <span style="font-weight: 600; font-family: 'Poppins', sans-serif;">
+                ✅ <%= successMsg %>
+            </span>
+            <button class="toast-close" onclick="closeToast()">×</button>
+        </div>
+        
+        <script>
+            const toast = document.getElementById('toast-box');
+            if (toast) {
+                if (window.history.replaceState) {
+                    const url = new URL(window.location);
+                    url.searchParams.delete('msg');
+                    window.history.replaceState(null, '', url);
+                }
+                setTimeout(() => { closeToast(); }, 3000);
+            }
+            function closeToast() {
+                const t = document.getElementById('toast-box');
+                if (t) {
+                    t.classList.add('fade-out');
+                    setTimeout(() => { t.remove(); }, 500);
+                }
+            }
+        </script>
+    <% } %>
+
     <% if (messages && messages.length > 0) { %>
         <div class="grid-container" style="justify-content: flex-start;">
             
             <% messages.forEach(msg => { %>
-                <div class="card" style="width: 100%; max-width: 100%; text-align: left; margin-bottom: 20px;">
+                <div class="card" style="width: 100%; max-width: 100%; text-align: left; margin-bottom: 20px; position: relative;">
+                    
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px;">
-                        <h3 style="margin: 0; font-size: 1.2rem;"><%= msg.name %></h3>
-                        <small style="color: #888;"><%= new Date(msg.created_at).toLocaleDateString() %></small>
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.2rem;"><%= msg.name %></h3>
+                            <small style="color: #888;"><%= new Date(msg.created_at).toLocaleDateString() %></small>
+                        </div>
+
+                        <form action="/messages/delete/<%= msg._id %>" method="POST" style="margin:0; padding:0; background:transparent; border:none; box-shadow:none;">
+                            <button type="submit" class="action-button" 
+                                    onclick="return confirm('Biztosan törölni szeretnéd ezt az üzenetet?')"
+                                    style="background-color: rgba(100, 0, 0, 0.6); color: #ff9999; border: 1px solid #ff4d4d; min-width: auto; padding: 5px 10px; font-size: 0.8rem;">
+                                Törlés
+                            </button>
+                        </form>
                     </div>
                     
                     <p style="color: #d4af37; font-size: 0.9rem; margin-bottom: 5px;">Email: <%= msg.email %></p>
