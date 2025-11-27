@@ -54,7 +54,7 @@
 
                                 <label class="switch">
                                     <input type="checkbox" 
-                                           onchange="toggleRole('<%= u._id %>', this)" 
+                                           onchange="toggleRole('<%= u._id.toString() %>', this)" 
                                            <%= u.role === 'admin' ? 'checked' : '' %>
                                            <%= isMe ? 'disabled' : '' %>>
                                     <span class="slider round"></span>
