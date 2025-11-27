@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Message = require('../models/Message');
 const User = require('../models/User');
 const Enekes = require('../models/Enekes');
@@ -93,7 +94,12 @@ router.post('/admin/toggle-role', async (req, res) => {
     if (userId) userId = userId.trim();
 
     try {
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: 'Érvénytelen ID formátum!' });
+        }
+
         const userToModify = await User.findById(userId);
+        
         if (!userToModify) {
             return res.status(404).json({ error: 'Felhasználó nem található!' });
         }
@@ -106,7 +112,7 @@ router.post('/admin/toggle-role', async (req, res) => {
         res.json({ success: true });
 
     } catch (err) {
-        console.error(err);
+        console.error("ADATBÁZIS HIBA:", err);
         res.status(500).json({ error: err.message });
     }
 });
