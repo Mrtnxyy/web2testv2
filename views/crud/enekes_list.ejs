@@ -3,17 +3,38 @@
     <h1 class="page-title">Énekesek Archívuma (<%= enekesek.length %> bejegyzés)</h1>
 
     <% if (messages && messages.length > 0) { %>
-        <div class="success-notification" id="success-msg">
-            <%= messages[0] %>
-            <button class="notification-close" onclick="document.getElementById('success-msg').style.display='none'">
-                &times;
-            </button>
+        <div id="toast-box" class="toast-notification">
+            <span style="font-weight: 600; font-family: 'Poppins', sans-serif;">
+                ✅ <%= messages[0] %>
+            </span>
+            <button class="toast-close" onclick="closeToast()">×</button>
         </div>
+        
         <script>
-            setTimeout(() => {
-                const msg = document.getElementById('success-msg');
-                if (msg) msg.style.display = 'none';
-            }, 3000);
+            const toast = document.getElementById('toast-box');
+            if (toast) {
+                // 1. URL tisztítása (hogy frissítéskor ne jöjjön vissza)
+                if (window.history.replaceState) {
+                    const url = new URL(window.location);
+                    url.searchParams.delete('msg');
+                    window.history.replaceState(null, '', url);
+                }
+
+                // 2. Időzített eltüntetés
+                setTimeout(() => {
+                    closeToast();
+                }, 3000);
+            }
+
+            function closeToast() {
+                const t = document.getElementById('toast-box');
+                if (t) {
+                    t.classList.add('fade-out');
+                    setTimeout(() => {
+                        t.remove();
+                    }, 500);
+                }
+            }
         </script>
     <% } %>
 
@@ -73,10 +94,8 @@ function filterTable() {
 
     for (let i = 1; i < tr.length; i++) {
         const nameCell = tr[i].getElementsByClassName('enekes-nev')[0];
-        
         if (nameCell) {
             const textValue = nameCell.textContent || nameCell.innerText;
-            
             if (textValue.toUpperCase().indexOf(filter) > -1) {
                 tr[i].style.display = '';
             } else {
