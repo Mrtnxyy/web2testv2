@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
       return res.render('auth/login', { error: 'Helytelen adatok.' });
     }
 
-    req.session.user = { id: user._id, name: user.name, email: user.email, role: user.role };
+    req.session.user = { _id: user._id, name: user.name, email: user.email, role: user.role };
     res.redirect('/');
   } catch (err) {
     console.error('Bejelentkezési hiba:', err);
