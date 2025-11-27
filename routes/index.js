@@ -3,13 +3,11 @@ const router = express.Router();
 const Message = require('../models/Message');
 const User = require('../models/User');
 
-// --- FŐOLDAL ---
 router.get('/', (req, res) => {
     const successMsg = req.query.msg === 'sent' ? 'Üzenet sikeresen elküldve!' : null;
     res.render('index', { successMsg }); 
 });
 
-// --- KAPCSOLAT ŰRLAP ---
 router.post('/contact', async (req, res) => {
     try {
         const { name, email, message } = req.body;
@@ -21,7 +19,6 @@ router.post('/contact', async (req, res) => {
     }
 });
 
-// --- PROFIL ---
 router.get('/profile', (req, res) => {
     if (!req.session.user) {
         return res.redirect('/auth/login');
@@ -29,7 +26,6 @@ router.get('/profile', (req, res) => {
     res.render('profile', { user: req.session.user });
 });
 
-// --- ÜZENETEK (Csak Adminnak) ---
 router.get('/messages', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.redirect('/');
@@ -43,7 +39,6 @@ router.get('/messages', async (req, res) => {
     }
 });
 
-// --- ADMIN OLDAL ---
 router.get('/admin', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.redirect('/');
@@ -52,14 +47,18 @@ router.get('/admin', async (req, res) => {
     try {
         const users = await User.find().sort({ created_at: -1 });
         const admins = users.filter(u => u.role === 'admin');
-        res.render('admin', { allUsers: users, admins: admins });
+        
+        res.render('admin', { 
+            allUsers: users, 
+            admins: admins,
+            currentUser: req.session.user 
+        });
     } catch (err) {
         console.error(err);
         res.redirect('/');
     }
 });
 
-// --- ADMIN: JOGOSULTSÁG VÁLTÁS ---
 router.post('/admin/toggle-role', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.status(403).json({ error: 'Nincs jogosultságod' });
@@ -67,7 +66,6 @@ router.post('/admin/toggle-role', async (req, res) => {
 
     const { userId, newRole } = req.body;
 
-    // VÉDELEM: Ne vehesse el a saját jogát!
     if (userId === req.session.user._id.toString()) {
         return res.status(400).json({ error: 'Saját magadtól nem veheted el a jogot!' });
     }

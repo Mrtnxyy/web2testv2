@@ -50,10 +50,13 @@
                             </td>
 
                             <td style="text-align: center;">
+                                <% const isMe = u._id.toString() === currentUser._id.toString(); %>
+
                                 <label class="switch">
                                     <input type="checkbox" 
                                            onchange="toggleRole('<%= u._id %>', this)" 
-                                           <%= u.role === 'admin' ? 'checked' : '' %>>
+                                           <%= u.role === 'admin' ? 'checked' : '' %>
+                                           <%= isMe ? 'disabled' : '' %>>
                                     <span class="slider round"></span>
                                 </label>
                             </td>
@@ -85,10 +88,8 @@
             const result = await response.json();
 
             if (result.success) {
-                // Szöveg frissítése
                 roleText.innerText = newRole;
                 
-                // Osztály (szín) cseréje
                 if (newRole === 'admin') {
                     roleText.className = 'role-admin';
                 } else {
