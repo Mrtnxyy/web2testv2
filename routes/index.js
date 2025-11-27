@@ -90,13 +90,15 @@ router.post('/admin/toggle-role', async (req, res) => {
 
     let { userId, newRole } = req.body;
 
-    userId = String(userId).trim();
+    if (!userId) {
+        return res.status(400).json({ error: 'Hiányzó felhasználó ID a kérésben!' });
+    }
 
     try {
         const userToModify = await User.findById(userId);
 
         if (!userToModify) {
-            return res.status(404).json({ error: 'Felhasználó nem található (Hibás ID)!' });
+            return res.status(404).json({ error: 'Felhasználó nem található!' });
         }
 
         if (userToModify.email === req.session.user.email) {
@@ -107,6 +109,9 @@ router.post('/admin/toggle-role', async (req, res) => {
         res.json({ success: true });
 
     } catch (err) {
+        if (err.name === 'CastError') {
+             return res.status(400).json({ error: 'Érvénytelen ID formátum!' });
+        }
         console.error("ADATBÁZIS HIBA:", err);
         res.status(500).json({ error: err.message });
     }
@@ -117,7 +122,7 @@ router.get('/adatbazis', async (req, res) => {
         const enekesek = await Enekes.find().sort({ nev: 1 }).lean();
         const repertoar = await Repertoar.find().lean();
         const szerepek = await Szerep.find().lean();
-        const muvek = await Mu.find().lean();
+        const muvek = await Muvek.find().lean();
 
         const enekesAdatok = enekesek.map(enekes => {
             const sajatRepertoar = repertoar.filter(r => r.enekesid === enekes.id);
