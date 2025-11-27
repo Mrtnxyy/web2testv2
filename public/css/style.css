@@ -54,10 +54,8 @@ h1, h2, h3 {
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 25px;
+  gap: 20px;
   align-items: center;
-  margin: 0;
-  padding: 0;
 }
 
 .nav-links li {
@@ -69,8 +67,8 @@ h1, h2, h3 {
 .nav-links li a {
   color: var(--text-light);
   text-decoration: none;
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: 400;
+  font-size: 0.95rem;
   transition: color 0.3s ease;
   display: inline-block;
 }
@@ -442,6 +440,7 @@ footer {
   width: 100%;
 }
 
+/* --- JAVÍTOTT MENÜ (STABIL) --- */
 .profile-dropdown {
   position: relative;
   cursor: pointer;
@@ -487,10 +486,14 @@ footer {
   border: 1px solid var(--gold);
   border-radius: 4px;
   overflow: hidden;
+  
+  /* EZ RENDEZI EGYMÁS ALÁ ŐKET */
+  flex-direction: column;
 }
 
+/* Hover esetén FLEX-ként jelenjen meg, ne BLOCK-ként */
 .profile-dropdown:hover .profile-dropdown-content {
-  display: block;
+  display: flex;
 }
 
 .profile-info {
@@ -498,6 +501,7 @@ footer {
   border-bottom: 1px solid rgba(212, 175, 55, 0.3);
   text-align: center;
   background-color: rgba(0,0,0,0.2);
+  width: 100%;
 }
 
 .profile-info p {
@@ -516,18 +520,20 @@ footer {
 }
 
 .profile-dropdown-content a {
-  padding: 12px 20px;
+  padding: 15px 20px;
   display: block;
+  width: 100%;
   color: #fff;
   text-decoration: none;
   transition: all 0.2s ease;
   border-bottom: 1px solid rgba(255,255,255,0.05);
+  text-align: center;
 }
 
+/* Padding-left KIVÉVE, hogy ne ugráljon */
 .profile-dropdown-content a:hover {
   background-color: var(--gold);
   color: var(--dark-bg) !important;
-  padding-left: 25px;
 }
 
 @keyframes fadeIn {
