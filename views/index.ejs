@@ -7,6 +7,13 @@
         Lépjen be a klasszikus zene legmagasztosabb világába. 
         Fedezze fel a halhatatlan műveket, a legendás szerepeket és az énekesek repertoárját.
       </p>
+      
+      <% if (typeof successMsg !== 'undefined' && successMsg) { %>
+        <div style="background: #d4af37; color: #000; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold;">
+            <%= successMsg %>
+        </div>
+      <% } %>
+
       <% if (!user) { %>
         <a href="/auth/register" class="cta-button">Csatlakozzon a közönséghez</a>
       <% } else { %>
@@ -38,4 +45,42 @@
           <p>Legendás hangok és feltörekvő tehetségek adatbázisa. Kövesse nyomon kedvenceit.</p>
       </div>
   </div>
+</section>
+
+<section style="padding: 60px 20px; background: linear-gradient(to top, #000, #161625); text-align: center;">
+    <div class="section-header">
+        <h2>Írjon nekünk</h2>
+        <div class="divider-gold"></div>
+    </div>
+
+    <div class="auth-wrapper" style="min-height: auto; padding: 0;">
+        <div class="auth-card" style="max-width: 600px; margin: 0 auto;">
+            
+            <form action="/contact" method="POST">
+                <div class="form-group">
+                    <label for="contact-name">Név</label>
+                    <input type="text" id="contact-name" name="name" 
+                           value="<%= user ? user.name : '' %>" 
+                           placeholder="Az Ön neve" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact-email">E-mail cím</label>
+                    <input type="email" id="contact-email" name="email" 
+                           value="<%= user ? user.email : '' %>" 
+                           placeholder="pelda@email.hu" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact-message">Üzenet</label>
+                    <textarea id="contact-message" name="message" rows="5" 
+                              style="width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid #444; color: #fff; border-radius: 4px;" 
+                              placeholder="Írja le véleményét vagy kérdését..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Üzenet küldése</button>
+            </form>
+
+        </div>
+    </div>
 </section>

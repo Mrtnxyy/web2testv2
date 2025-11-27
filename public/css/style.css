@@ -435,24 +435,6 @@ table td {
     padding: 15px;
 }
 
-/* (Ezeket lecseréljük az új specifikus gomb stílusokra a fájl végén) */
-.action-button, 
-table td form button {
-  padding: 5px 10px;
-  background-color: transparent;
-  border: 1px solid #555;
-  color: #ddd;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.action-button:hover,
-table td form button:hover {
-  background-color: var(--gold);
-  color: var(--dark-bg);
-}
-
-
 /* --- FOOTER --- */
 footer {
   background-color: #050508;
@@ -650,4 +632,26 @@ table td form button.action-button:hover {
     color: #fff !important; /* Fehér szöveg */
     border-color: #ff3333 !important;
     box-shadow: 0 0 10px rgba(255, 50, 50, 0.6);
+}
+
+/* ========================================= */
+/* --- ÜZENET (TEXTAREA) STÍLUS (Kapcsolat űrlaphoz) --- */
+/* ========================================= */
+textarea {
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.1) !important; /* Átlátszóbb háttér */
+    border: 1px solid var(--gold) !important; /* Arany keret */
+    color: #fff !important; /* Fehér betű */
+    border-radius: 4px;
+    font-family: 'Poppins', sans-serif; /* Ugyanaz a betűtípus */
+    font-size: 1rem;
+    resize: vertical; /* Csak lefelé lehessen nagyítani */
+    box-sizing: border-box;
+}
+
+textarea:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }

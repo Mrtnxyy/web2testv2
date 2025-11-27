@@ -1,6 +1,27 @@
-<% layout('layout') %>
-<h2>Üzenetek</h2>
-<table border='1'><tr><th>ID</th><th>Név</th><th>Email</th><th>Üzenet</th><th>Idő</th></tr>
-<% messages.forEach(m => { %>
-<tr><td><%= m.id %></td><td><%= m.name %></td><td><%= m.email %></td><td><%= m.message %></td><td><%= new Date(m.created_at).toLocaleString() %></td></tr>
-<% }) %></table>
+<div class="crud-container">
+    <h1 class="page-title">Beérkezett Üzenetek</h1>
+
+    <% if (messages && messages.length > 0) { %>
+        <div class="grid-container" style="justify-content: flex-start;">
+            
+            <% messages.forEach(msg => { %>
+                <div class="card" style="width: 100%; max-width: 100%; text-align: left; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px;">
+                        <h3 style="margin: 0; font-size: 1.2rem;"><%= msg.name %></h3>
+                        <small style="color: #888;"><%= new Date(msg.created_at).toLocaleDateString() %></small>
+                    </div>
+                    
+                    <p style="color: #d4af37; font-size: 0.9rem; margin-bottom: 5px;">Email: <%= msg.email %></p>
+                    <p style="color: #ddd; line-height: 1.6; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 4px;">
+                        "<%= msg.message %>"
+                    </p>
+                </div>
+            <% }) %>
+
+        </div>
+    <% } else { %>
+        <div style="text-align: center; color: #888; padding: 50px;">
+            <h3>Nincs megjeleníthető üzenet.</h3>
+        </div>
+    <% } %>
+</div>
