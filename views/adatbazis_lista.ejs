@@ -1,17 +1,27 @@
 <div class="crud-container">
     <h1 class="page-title">Teljes Repertoár Adatbázis</h1>
-    <p style="text-align:center; color:#aaa; margin-bottom:30px;">
-        (Összekapcsolt adatok: Énekesek + Szerepek + Művek)
-    </p>
+    
+    <div class="crud-controls" style="margin-bottom: 40px;">
+        <input type="text" 
+               id="repertoarSearch" 
+               placeholder="Keresés énekes nevére..." 
+               onkeyup="filterRepertoar()" 
+               class="search-input"
+               style="max-width: 600px; margin: 0 auto; display: block;">
+    </div>
 
     <div class="grid-container" style="justify-content: center;">
+        
         <% enekesek.forEach(enekes => { %>
             <% if (enekes.szerepek.length > 0) { %>
-                <div class="card" style="width: 100%; max-width: 800px; margin-bottom: 20px; padding: 0; cursor: default;">
-                    <div style="background: rgba(212, 175, 55, 0.1); padding: 15px 20px; border-bottom: 1px solid #d4af37; display: flex; justify-content: space-between; align-items: center;">
-                        <h3 style="margin:0; color: #d4af37;"><%= enekes.nev %></h3>
+                
+                <div class="card repertoar-card" style="width: 100%; max-width: 800px; margin-bottom: 20px; padding: 0; overflow: hidden;">
+                    
+                    <div class="card-header" style="background: rgba(212, 175, 55, 0.1); padding: 15px 20px; border-bottom: 1px solid var(--gold); display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin:0; color: var(--gold);" class="enekes-name"><%= enekes.nev %></h3>
                         <span style="color: #888; font-size: 0.9rem;">Született: <%= enekes.szulev %></span>
                     </div>
+
                     <div style="padding: 20px;">
                         <table style="width: 100%; margin: 0;">
                             <thead>
@@ -22,23 +32,74 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% enekes.szerepek.forEach(sz => { %>
+                                <% enekes.szerepek.forEach(szerep => { %>
                                     <tr>
                                         <td style="padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #ccc;">
-                                            <strong style="color: #d4af37;"><%= sz.szerzo %></strong>: <%= sz.muCim %>
+                                            <strong style="color: #d4af37;"><%= szerep.szerzo %></strong>: <%= szerep.muCim %>
                                         </td>
-                                        <td style="padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.05);"><%= sz.szerepnev %></td>
-                                        <td style="padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: right; color: #888;"><%= sz.utoljara %></td>
+                                        <td style="padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                            <%= szerep.szerepnev %>
+                                        </td>
+                                        <td style="padding: 8px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: right; color: #888;">
+                                            <%= szerep.utoljara %>
+                                        </td>
                                     </tr>
                                 <% }) %>
                             </tbody>
                         </table>
                     </div>
                 </div>
+
             <% } %>
         <% }) %>
+
     </div>
+    
+    <div id="no-result" style="text-align: center; display: none; color: #888; margin-top: 20px;">
+        Nincs találat ilyen nevű énekesre.
+    </div>
+
     <div style="text-align: center; margin-top: 30px;">
         <a href="/" class="btn-cancel">Vissza a főoldalra</a>
     </div>
 </div>
+
+<script>
+function filterRepertoar() {
+    // 1. Keresett szöveg lekérése (kisbetűssé alakítva)
+    const input = document.getElementById('repertoarSearch');
+    const filter = input.value.toLowerCase();
+    
+    // 2. Az összes kártya lekérése
+    const cards = document.getElementsByClassName('repertoar-card');
+    let hasVisibleCard = false;
+
+    // 3. Végigmegyünk minden kártyán
+    for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        // Megkeressük a nevet a kártyán belül
+        const nameElement = card.getElementsByClassName('enekes-name')[0];
+        
+        if (nameElement) {
+            const txtValue = nameElement.textContent || nameElement.innerText;
+            
+            // Ha a névben benne van a keresett szöveg -> MEGJELENÍTÉS
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                card.style.display = "";
+                hasVisibleCard = true;
+            } else {
+                // Ha nincs benne -> ELREJTÉS
+                card.style.display = "none";
+            }
+        }
+    }
+
+    // 4. "Nincs találat" üzenet kezelése
+    const noResultMsg = document.getElementById('no-result');
+    if (!hasVisibleCard) {
+        noResultMsg.style.display = "block";
+    } else {
+        noResultMsg.style.display = "none";
+    }
+}
+</script>
