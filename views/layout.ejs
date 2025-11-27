@@ -19,7 +19,6 @@
 
     <ul class="nav-links">
         <li><a href="/">Főoldal</a></li>
-        
         <li><a href="/adatbazis">Repertoár (Adatbázis)</a></li>
         <li><a href="/crud">Énekesek (CRUD)</a></li>
         
@@ -45,10 +44,25 @@
 
                 <a href="/profile">Profil</a>
                 
-                <a href="/messages">Üzenetek</a>
-                
                 <% if (user.role === 'admin') { %>
-                  <a href="/admin">Admin Kezelés</a>
+                    <a href="/messages" style="display: flex; justify-content: space-between; align-items: center;">
+                        Üzenetek
+                        <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
+                            <span style="background: #ff4d4d; color: #fff; padding: 2px 6px; border-radius: 10px; font-size: 0.8rem; font-weight: bold;">
+                                <%= unreadCount %>
+                            </span>
+                        <% } %>
+                    </a>
+                    <a href="/admin">Admin Kezelés</a>
+                <% } else { %>
+                    <a href="/messages" style="display: flex; justify-content: space-between; align-items: center;">
+                        Üzenetek
+                        <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
+                            <span style="background: #d4af37; color: #000; padding: 2px 6px; border-radius: 10px; font-size: 0.8rem; font-weight: bold;">
+                                <%= unreadCount %>
+                            </span>
+                        <% } %>
+                    </a>
                 <% } %>
                 
                 <a href="/auth/logout">Kijelentkezés</a>

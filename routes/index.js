@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-
 const Message = require('../models/Message');
 const User = require('../models/User');
 const Enekes = require('../models/Enekes');
@@ -16,14 +15,13 @@ router.get('/', (req, res) => {
 router.post('/contact', async (req, res) => {
     try {
         const { name, email, message } = req.body;
-        
         const senderId = req.session.user ? req.session.user._id : null;
 
         await Message.create({ 
             name, 
             email, 
             message,
-            sender_id: senderId
+            sender_id: senderId 
         });
         res.redirect('/?msg=sent');
     } catch (err) {
@@ -45,6 +43,7 @@ router.get('/messages', async (req, res) => {
         
         if (req.session.user.role === 'admin') {
             messages = await Message.find().sort({ created_at: -1 });
+            await Message.updateMany({ read: false }, { read: true });
         } else {
             messages = await Message.find({ sender_id: req.session.user._id }).sort({ created_at: -1 });
         }
@@ -77,8 +76,15 @@ router.post('/messages/delete/:id', async (req, res) => {
     if (!req.session.user) return res.redirect('/');
     
     try {
-        await Message.findByIdAndDelete(req.params.id);
-        res.redirect('/messages?msg=deleted');
+        const msg = await Message.findById(req.params.id);
+        if (!msg) return res.redirect('/messages');
+
+        if (req.session.user.role === 'admin' || String(msg.sender_id) === String(req.session.user._id)) {
+            await Message.findByIdAndDelete(req.params.id);
+            res.redirect('/messages?msg=deleted');
+        } else {
+            res.status(403).send('Nincs jogosultságod törölni ezt az üzenetet.');
+        }
     } catch (err) {
         console.error(err);
         res.redirect('/messages');
@@ -98,8 +104,10 @@ router.get('/admin', async (req, res) => {
 
 router.post('/admin/toggle-role', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') return res.status(403).json({});
+    
     const { userId, newRole } = req.body;
     if (String(userId) === String(req.session.user._id)) return res.status(400).json({});
+
     try {
         await User.findByIdAndUpdate(userId, { role: newRole });
         res.json({ success: true });
