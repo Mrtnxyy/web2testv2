@@ -1,7 +1,107 @@
-<div class="auth-wrapper">
-    <div class="auth-card">
-        <h2>Adminisztrációs Felület</h2>
-        <p>Fejlesztés alatt...</p>
-        <a href="/" class="btn-cancel">Vissza</a>
+<div class="crud-container">
+    <h1 class="page-title">Adminisztrációs Felület</h1>
+
+    <div class="admin-grid">
+        
+        <div class="admin-box">
+            <h2 class="box-title">Admin Felhasználók</h2>
+            <div class="admin-list">
+                <% if (admins.length > 0) { %>
+                    <% admins.forEach(admin => { %>
+                        <div class="admin-item">
+                            <div class="admin-icon">👑</div>
+                            <div class="admin-details">
+                                <strong><%= admin.name %></strong>
+                                <small><%= admin.email %></small>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p style="text-align:center; color:#888;">Nincs admin felhasználó.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="admin-box wide-box">
+            <h2 class="box-title">Összes Regisztrált Felhasználó</h2>
+            
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Név / Email</th>
+                        <th>Regisztráció</th>
+                        <th>Jelenlegi Jog</th>
+                        <th style="text-align: center;">Admin Jog</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% allUsers.forEach(u => { %>
+                        <tr>
+                            <td>
+                                <div style="font-weight: bold; color: #fff;"><%= u.name %></div>
+                                <div style="font-size: 0.85rem; color: #888;"><%= u.email %></div>
+                            </td>
+                            <td>
+                                <%= u.created_at ? new Date(u.created_at).toLocaleDateString() : '-' %>
+                            </td>
+                            
+                            <td id="role-text-<%= u._id %>" class="<%= u.role === 'admin' ? 'role-admin' : 'role-user' %>">
+                                <%= u.role %>
+                            </td>
+
+                            <td style="text-align: center;">
+                                <label class="switch">
+                                    <input type="checkbox" 
+                                           onchange="toggleRole('<%= u._id %>', this)" 
+                                           <%= u.role === 'admin' ? 'checked' : '' %>>
+                                    <span class="slider round"></span>
+                                </label>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="/" class="btn-cancel">Vissza a főoldalra</a>
     </div>
 </div>
+
+<script>
+    async function toggleRole(userId, checkbox) {
+        const newRole = checkbox.checked ? 'admin' : 'user';
+        const roleText = document.getElementById('role-text-' + userId);
+
+        try {
+            const response = await fetch('/admin/toggle-role', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, newRole })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Szöveg frissítése
+                roleText.innerText = newRole;
+                
+                // Osztály (szín) cseréje
+                if (newRole === 'admin') {
+                    roleText.className = 'role-admin';
+                } else {
+                    roleText.className = 'role-user';
+                }
+            } else {
+                alert('Hiba történt!');
+                checkbox.checked = !checkbox.checked;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Hálózati hiba!');
+            checkbox.checked = !checkbox.checked;
+        }
+    }
+</script>
