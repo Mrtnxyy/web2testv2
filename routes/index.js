@@ -83,16 +83,13 @@ router.get('/admin', async (req, res) => {
     }
 });
 
-router.post('/toggle-role', async (req, res) => {
+router.post('/admin/toggle-role', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.status(403).json({ error: 'Nincs jogosultságod!' });
     }
 
     let { userId, newRole } = req.body;
-
-    if (!userId) {
-        return res.status(400).json({ error: 'Hiányzó felhasználó ID a kérésben!' });
-    }
+    if (userId) userId = String(userId).trim();
 
     try {
         const userToModify = await User.findById(userId);
@@ -109,20 +106,25 @@ router.post('/toggle-role', async (req, res) => {
         res.json({ success: true });
 
     } catch (err) {
-        if (err.name === 'CastError') {
-             return res.status(400).json({ error: 'Érvénytelen ID formátum!' });
-        }
-        console.error("ADATBÁZIS HIBA:", err);
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 });
 
 router.get('/adatbazis', async (req, res) => {
     try {
+        if (!Enekes || !Mu || !Szerep || !Repertoar) {
+             return res.status(500).send('Hiba: Adatmodell hiányzik. Ellenőrizze a modellek importját.');
+        }
+
         const enekesek = await Enekes.find().sort({ nev: 1 }).lean();
         const repertoar = await Repertoar.find().lean();
         const szerepek = await Szerep.find().lean();
-        const muvek = await Muvek.find().lean();
+        const muvek = await Mu.find().lean();
+
+        if (!enekesek || enekesek.length === 0) {
+            return res.render('adatbazis_lista', { enekesek: [] });
+        }
 
         const enekesAdatok = enekesek.map(enekes => {
             const sajatRepertoar = repertoar.filter(r => r.enekesid === enekes.id);
@@ -139,8 +141,10 @@ router.get('/adatbazis', async (req, res) => {
             }).filter(i => i !== null);
             return { ...enekes, szerepek: szerepLista };
         });
+        
         res.render('adatbazis_lista', { enekesek: enekesAdatok.slice(0, 100) });
     } catch (err) {
+        console.error("KRITIKUS REPERTOÁR HIBA:", err);
         res.status(500).send('Hiba');
     }
 });
