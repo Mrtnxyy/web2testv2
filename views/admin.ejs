@@ -51,10 +51,11 @@
 
                             <td style="text-align: center;">
                                 <% const isMe = u.email === currentUser.email; %>
-                                
+
                                 <label class="switch">
                                     <input type="checkbox" 
-                                           onchange="toggleRole('<%= String(u._id) %>', this)" 
+                                           data-userid="<%= u._id %>"
+                                           onchange="toggleRole(this)" 
                                            <%= u.role === 'admin' ? 'checked' : '' %>
                                            <%= isMe ? 'disabled' : '' %>>
                                     <span class="slider round"></span>
@@ -74,8 +75,16 @@
 </div>
 
 <script>
-    async function toggleRole(userId, checkbox) {
+    async function toggleRole(checkbox) {
+        const userId = checkbox.getAttribute('data-userid');
         const newRole = checkbox.checked ? 'admin' : 'user';
+        
+        if (!userId) {
+            alert("Hiba: Nem található a felhasználó ID!");
+            checkbox.checked = !checkbox.checked;
+            return;
+        }
+
         const roleText = document.getElementById('role-text-' + userId);
 
         try {
