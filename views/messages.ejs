@@ -42,9 +42,8 @@
                         </div>
 
                         <form action="/messages/delete/<%= msg._id %>" method="POST" style="margin:0;">
-                            <button type="submit" class="action-button" 
-                                    onclick="return confirm('Biztosan törölni szeretnéd?')"
-                                    style="background-color: rgba(100, 0, 0, 0.6); color: #ff9999; border: 1px solid #ff4d4d; min-width: auto; padding: 5px 10px; font-size: 0.8rem;">
+                            <button type="submit" class="btn-delete-anim" 
+                                    onclick="return confirm('Biztosan törölni szeretnéd?')">
                                 Törlés
                             </button>
                         </form>

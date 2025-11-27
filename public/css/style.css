@@ -479,14 +479,13 @@ footer {
   display: none;
   position: absolute;
   right: 0;
-  top: 100%;
-  margin-top: 10px;
+  top: 120%;
   background-color: var(--dark-panel);
-  min-width: 180px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+  min-width: 200px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
   z-index: 1000;
   border: 1px solid var(--gold);
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
   flex-direction: column;
 }
@@ -499,7 +498,7 @@ footer {
   padding: 15px;
   border-bottom: 1px solid rgba(212, 175, 55, 0.3);
   text-align: center;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0,0,0,0.2);
   width: 100%;
 }
 
@@ -513,13 +512,13 @@ footer {
 
 .profile-info small {
   color: #aaa;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .profile-dropdown-content a {
-  padding: 12px 15px;
+  padding: 15px 20px;
   display: block;
   width: 100%;
   color: #fff;
@@ -527,11 +526,6 @@ footer {
   transition: all 0.2s ease;
   border-bottom: 1px solid rgba(255,255,255,0.05);
   text-align: center;
-  font-size: 0.95rem;
-}
-
-.profile-dropdown-content a:last-child {
-    border-bottom: none;
 }
 
 .profile-dropdown-content a:hover {
@@ -548,6 +542,109 @@ footer {
   .hero-content h1 { font-size: 2.5rem; }
   .grid-container { flex-direction: column; align-items: center; }
   .auth-card { width: 90%; }
+}
+
+.add-new-btn {
+    background-color: var(--gold) !important;
+    color: #000 !important;
+    font-weight: bold;
+    border: 1px solid var(--gold);
+    padding: 12px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin-top: 10px;
+}
+
+.add-new-btn:hover {
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+.search-input {
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid var(--gold) !important;
+    color: #fff !important;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.action-button {
+    padding: 6px 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 1px;
+    min-width: 100px;
+    border: none;
+}
+
+a.action-button {
+    background-color: var(--gold) !important;
+    color: #0b0b15 !important;
+    border: 1px solid var(--gold);
+}
+
+a.action-button:hover {
+    background-color: #fff !important;
+    border-color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+form button.action-button {
+    background-color: rgba(100, 0, 0, 0.6) !important;
+    color: #ff9999 !important;
+    border: 1px solid #ff4d4d !important;
+    margin-left: 8px;
+}
+
+form button.action-button:hover {
+    background-color: #ff3333 !important;
+    color: #fff !important;
+    border-color: #ff3333 !important;
+    box-shadow: 0 0 10px rgba(255, 50, 50, 0.6);
+}
+
+.btn-delete-anim {
+    background-color: rgba(100, 0, 0, 0.6);
+    color: #ff9999;
+    border: 1px solid #ff4d4d;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-delete-anim:hover {
+    background-color: #ff4d4d;
+    color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
+    border-color: #ff4d4d;
 }
 
 textarea {
@@ -771,26 +868,4 @@ input:disabled + .slider {
 
 .msg-pending {
     border-left: 5px solid #d4af37 !important;
-}
-
-.btn-delete-anim {
-    background-color: rgba(100, 0, 0, 0.6);
-    color: #ff9999;
-    border: 1px solid #ff4d4d;
-    padding: 6px 12px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.btn-delete-anim:hover {
-    background-color: #ff4d4d;
-    color: #fff;
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
-    border-color: #ff4d4d;
 }

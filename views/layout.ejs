@@ -45,7 +45,7 @@
                 <a href="/profile">Profil</a>
                 
                 <% if (user.role === 'admin') { %>
-                    <a href="/messages" style="display: flex; justify-content: space-between; align-items: center;">
+                    <a href="/messages" style="display: flex; justify-content: center; align-items: center; gap: 8px;">
                         Üzenetek
                         <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
                             <span style="background: #ff4d4d; color: #fff; padding: 2px 6px; border-radius: 10px; font-size: 0.8rem; font-weight: bold;">
@@ -55,7 +55,7 @@
                     </a>
                     <a href="/admin">Admin Kezelés</a>
                 <% } else { %>
-                    <a href="/messages" style="display: flex; justify-content: space-between; align-items: center;">
+                    <a href="/messages" style="display: flex; justify-content: center; align-items: center; gap: 8px;">
                         Üzenetek
                         <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
                             <span style="background: #d4af37; color: #000; padding: 2px 6px; border-radius: 10px; font-size: 0.8rem; font-weight: bold;">
