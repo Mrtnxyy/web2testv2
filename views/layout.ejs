@@ -45,20 +45,20 @@
                 <a href="/profile">Profil</a>
                 
                 <% if (user.role === 'admin') { %>
-                    <a href="/messages" style="display: flex; justify-content: center; align-items: center; gap: 8px;">
-                        Üzenetek
+                    <a href="/messages" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Üzenetek</span>
                         <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
-                            <span style="background: #ff4d4d; color: #fff; padding: 2px 6px; border-radius: 10px; font-size: 0.8rem; font-weight: bold;">
+                            <span style="background: #ff4d4d; color: #fff; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; min-width: 20px; text-align: center;">
                                 <%= unreadCount %>
                             </span>
                         <% } %>
                     </a>
                     <a href="/admin">Admin Kezelés</a>
                 <% } else { %>
-                    <a href="/messages" style="display: flex; justify-content: center; align-items: center; gap: 8px;">
-                        Üzenetek
+                    <a href="/messages" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Üzenetek</span>
                         <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
-                            <span style="background: #d4af37; color: #000; padding: 2px 6px; border-radius: 10px; font-size: 0.8rem; font-weight: bold;">
+                            <span style="background: #2ecc71; color: #fff; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; min-width: 20px; text-align: center;">
                                 <%= unreadCount %>
                             </span>
                         <% } %>

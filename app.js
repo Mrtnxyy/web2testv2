@@ -32,9 +32,12 @@ app.use(async (req, res, next) => {
   
   try {
       if (req.session.user && req.session.user.role === 'admin') {
-          res.locals.unreadCount = await Message.countDocuments({ read: false });
+          res.locals.unreadCount = await Message.countDocuments({ reply: null });
       } else if (req.session.user) {
-          res.locals.unreadCount = await Message.countDocuments({ sender_id: req.session.user._id });
+          res.locals.unreadCount = await Message.countDocuments({ 
+              sender_id: req.session.user._id,
+              reply: { $ne: null }
+          });
       } else {
           res.locals.unreadCount = 0;
       }
