@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const muSchema = new mongoose.Schema({
-    originalId: { type: Number, required: true, unique: true },
-    szerzo: { type: String, required: true },
-    cim: { type: String, required: true }
+    id: { type: Number, required: true },
+    szerzo: String,
+    cim: String
 });
 
-module.exports = mongoose.model('Mu', muSchema, 'muvek');
+module.exports = mongoose.model('Mu', muSchema);

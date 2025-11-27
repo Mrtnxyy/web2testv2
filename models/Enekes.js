@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 
 const enekesSchema = new mongoose.Schema({
-    originalId: { type: Number, required: true, unique: true },
+    id: { type: Number, required: true },
     nev: { type: String, required: true },
-    szulev: { type: Number },
-    created_at: { type: Date, default: Date.now }
+    szulev: Number
 });
 
-module.exports = mongoose.model('Enekes', enekesSchema, 'enekesek');
+module.exports = mongoose.model('Enekes', enekesSchema);

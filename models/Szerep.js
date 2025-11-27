@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const szerepSchema = new mongoose.Schema({
-    originalId: { type: Number, required: true, unique: true },
-    szerepnev: { type: String, required: true },
-    muid: { type: Number, required: true }, 
-    hang: { type: String }
+    id: { type: Number, required: true },
+    szerepnev: String,
+    muid: Number,
+    hang: String
 });
 
-module.exports = mongoose.model('Szerep', szerepSchema, 'szerepek');
+module.exports = mongoose.model('Szerep', szerepSchema);
