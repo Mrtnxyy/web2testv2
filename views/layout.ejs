@@ -42,10 +42,10 @@
                 </div>
 
                 <a href="/profile">Profil</a>
-                <a href="/messages">Üzenetek</a>
                 
                 <% if (user.role === 'admin') { %>
-                  <a href="/admin">Admin Kezelés</a>
+                    <a href="/messages">Üzenetek</a>
+                    <a href="/admin">Admin Kezelés</a>
                 <% } %>
                 
                 <a href="/auth/logout">Kijelentkezés</a>

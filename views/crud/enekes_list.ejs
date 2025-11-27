@@ -9,20 +9,20 @@
                 &times;
             </button>
         </div>
-        
         <script>
             setTimeout(() => {
                 const msg = document.getElementById('success-msg');
-                if (msg) {
-                    msg.style.display = 'none';
-                }
+                if (msg) msg.style.display = 'none';
             }, 3000);
         </script>
     <% } %>
 
     <div class="crud-controls">
         <input type="text" id="searchInput" placeholder="Keresés névre..." onkeyup="filterTable()" class="search-input">
-        <a href="/crud/add" class="add-new-btn">Új énekes hozzáadása</a>
+        
+        <% if (user && user.role === 'admin') { %>
+            <a href="/crud/add" class="add-new-btn">Új énekes hozzáadása</a>
+        <% } %>
     </div>
 
     <% if (enekesek.length > 0) { %>
@@ -31,7 +31,9 @@
                 <tr>
                     <th>Név</th>
                     <th>Születési év</th>
-                    <th style="text-align: right;">Műveletek</th>
+                    <% if (user && user.role === 'admin') { %>
+                        <th style="text-align: right;">Műveletek</th>
+                    <% } %>
                 </tr>
             </thead>
             <tbody>
@@ -39,15 +41,18 @@
                     <tr>
                         <td class="enekes-nev" style="font-weight: 600; color: #fff;"><%= enekes.nev %></td>
                         <td><%= enekes.szulev %></td>
-                        <td style="text-align: right;">
-                            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                                <a href="/crud/edit/<%= enekes._id %>" class="action-button">Szerkesztés</a>
-                                
-                                <form method="POST" action="/crud/delete/<%= enekes._id %>" style="margin:0; padding:0; background:transparent; box-shadow:none;">
-                                    <button type="submit" class="action-button" onclick="return confirm('Biztosan törölni szeretnéd ezt az énekest?')">Törlés</button>
-                                </form>
-                            </div>
-                        </td>
+                        
+                        <% if (user && user.role === 'admin') { %>
+                            <td style="text-align: right;">
+                                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                                    <a href="/crud/edit/<%= enekes._id %>" class="action-button">Szerkesztés</a>
+                                    
+                                    <form method="POST" action="/crud/delete/<%= enekes._id %>" style="margin:0; padding:0; background:transparent; box-shadow:none;">
+                                        <button type="submit" class="action-button" onclick="return confirm('Biztosan törölni szeretnéd ezt az énekest?')">Törlés</button>
+                                    </form>
+                                </div>
+                            </td>
+                        <% } %>
                     </tr>
                 <% }); %>
             </tbody>
