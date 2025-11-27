@@ -54,8 +54,7 @@
 
                                 <label class="switch">
                                     <input type="checkbox" 
-                                           data-id="<%= u._id %>"
-                                           onchange="toggleRole(this)" 
+                                           onchange="toggleRole('<%= u._id %>', this)" 
                                            <%= u.role === 'admin' ? 'checked' : '' %>
                                            <%= isMe ? 'disabled' : '' %>>
                                     <span class="slider round"></span>
@@ -75,12 +74,11 @@
 </div>
 
 <script>
-    async function toggleRole(checkbox) {
-        const userId = checkbox.getAttribute('data-id');
+    async function toggleRole(userId, checkbox) {
         const newRole = checkbox.checked ? 'admin' : 'user';
         const roleText = document.getElementById('role-text-' + userId);
 
-        console.log("Küldés indítása:", { userId, newRole });
+        console.log("KÜLDÉS:", userId, newRole);
 
         try {
             const response = await fetch('/admin/toggle-role', {
