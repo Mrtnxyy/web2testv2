@@ -83,7 +83,7 @@ router.get('/admin', async (req, res) => {
     }
 });
 
-router.post('/admin/toggle-role', async (req, res) => {
+router.post('/toggle-role', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.status(403).json({ error: 'Nincs jogosultságod!' });
     }
