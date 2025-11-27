@@ -76,10 +76,8 @@
 <script>
     async function toggleRole(userId, checkbox) {
 
-        console.log("ID:", userId);
-
-        if (!userId) {
-            alert("Hiba: Hiányzó ID!");
+        if (!userId || userId === "undefined" || String(userId).length < 10) {
+            alert("Hiba: Az azonosító nem található!");
             checkbox.checked = !checkbox.checked;
             return;
         }
