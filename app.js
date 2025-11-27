@@ -6,6 +6,8 @@ const methodOverride = require('method-override');
 const path = require('path');
 const mongoose = require('mongoose');
 
+const Message = require('./models/Message'); 
+
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const messagesRouter = require('./routes/messages');
@@ -14,18 +16,14 @@ const crudRouter = require('./routes/crud');
 const app = express();
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB Csatlakozva!'))
-  .catch(err => console.log(err));
+  .then(() => console.log('✅ MongoDB Csatlakozva!'))
+  .catch(err => console.log('❌ Adatbázis hiba:', err));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// --- FORM ADATOK KEZELÉSE ---
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// --- EZ A SOR HIÁNYZOTT! (Ez kell a csúszkához/JSON-hoz) ---
-app.use(express.json()); 
-
+app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -35,8 +33,24 @@ app.use(session({
   saveUninitialized: false
 }));
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.user = req.session.user || null;
+  
+  try {
+      if (req.session.user && req.session.user.role === 'admin') {
+          res.locals.unreadCount = await Message.countDocuments({ reply: null });
+      } else if (req.session.user) {
+          res.locals.unreadCount = await Message.countDocuments({ 
+              sender_id: req.session.user._id,
+              reply: { $ne: null }
+          });
+      } else {
+          res.locals.unreadCount = 0;
+      }
+  } catch (err) {
+      res.locals.unreadCount = 0;
+  }
+  
   next();
 });
 

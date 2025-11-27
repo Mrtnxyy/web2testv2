@@ -93,26 +93,39 @@ router.post('/messages/delete/:id', async (req, res) => {
 
 router.get('/admin', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/');
+    
     try {
         const users = await User.find().sort({ created_at: -1 });
         const admins = users.filter(u => u.role === 'admin');
-        res.render('admin', { allUsers: users, admins: admins, currentUser: req.session.user });
+        
+        res.render('admin', { 
+            allUsers: users, 
+            admins: admins,
+            currentUser: req.session.user 
+        });
     } catch (err) {
+        console.error(err);
         res.redirect('/');
     }
 });
 
 router.post('/admin/toggle-role', async (req, res) => {
-    if (!req.session.user || req.session.user.role !== 'admin') return res.status(403).json({});
-    
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.status(403).json({ error: 'Nincs jogosultságod!' });
+    }
+
     const { userId, newRole } = req.body;
-    if (String(userId) === String(req.session.user._id)) return res.status(400).json({});
+
+    if (String(userId) === String(req.session.user._id)) {
+        return res.status(400).json({ error: 'Saját magadtól nem veheted el a jogot!' });
+    }
 
     try {
         await User.findByIdAndUpdate(userId, { role: newRole });
         res.json({ success: true });
     } catch (err) {
-        res.status(500).json({});
+        console.error("ADATBÁZIS HIBA:", err);
+        res.status(500).json({ error: err.message });
     }
 });
 
@@ -140,7 +153,7 @@ router.get('/adatbazis', async (req, res) => {
         });
         res.render('adatbazis_lista', { enekesek: enekesAdatok.slice(0, 100) });
     } catch (err) {
-        res.status(500).send('Hiba');
+        res.status(500).send('Hiba történt az adatok betöltésekor.');
     }
 });
 
