@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Message = require('../models/Message');
-const User = require('../models/User');
+const User = require('../models/User'); 
 
 router.get('/', (req, res) => {
     const successMsg = req.query.msg === 'sent' ? 'Üzenet sikeresen elküldve!' : null;
@@ -66,7 +66,8 @@ router.post('/admin/toggle-role', async (req, res) => {
 
     const { userId, newRole } = req.body;
 
-    if (userId === req.session.user._id.toString()) {
+    // Védelem: ID összehasonlítása Stringként
+    if (String(userId) === String(req.session.user._id)) {
         return res.status(400).json({ error: 'Saját magadtól nem veheted el a jogot!' });
     }
 

@@ -50,7 +50,7 @@
                             </td>
 
                             <td style="text-align: center;">
-                                <% const isMe = u._id.toString() === currentUser._id.toString(); %>
+                                <% const isMe = u.email === currentUser.email; %>
 
                                 <label class="switch">
                                     <input type="checkbox" 
@@ -96,7 +96,7 @@
                     roleText.className = 'role-user';
                 }
             } else {
-                alert('Hiba történt!');
+                alert('Hiba történt: ' + (result.error || 'Ismeretlen hiba'));
                 checkbox.checked = !checkbox.checked;
             }
         } catch (error) {
