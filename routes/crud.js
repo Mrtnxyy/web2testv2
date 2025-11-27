@@ -1,117 +1,114 @@
 const express = require('express');
 const router = express.Router();
+const Enekes = require('../models/Enekes');
 
-const Enekes = require('../models/Enekes'); 
-const Mu = require('../models/Mu'); 
-const Szerep = require('../models/Szerep'); 
-const Repertoar = require('../models/Repertoar'); 
-
-function ensureAdmin(req, res, next) {
-    if (req.session.user && req.session.user.role === 'admin') {
-        return next();
-    }
-    res.redirect('/'); 
-}
-
+// --- LISTÁZÁS (Főoldal) ---
 router.get('/', async (req, res) => {
-    if (!req.session.user) {
-        return res.redirect('/auth/login');
-    }
-    
     try {
-        const enekesek = await Enekes.find().sort({ nev: 1 }).lean(); 
+        // Énekesek lekérése ABC sorrendben
+        const enekesek = await Enekes.find().sort({ nev: 1 });
+        
+        // Flash üzenetek kezelése (ha van)
+        const messages = req.query.msg ? [req.query.msg] : [];
         
         res.render('crud/enekes_list', { 
-            title: 'Énekesek (CRUD)', 
-            enekesek: enekesek,
-            messages: req.session.messages || null
+            enekesek, 
+            messages, 
+            user: req.session.user || null 
         });
-        req.session.messages = [];
-    } catch (error) {
-        console.error(error);
-        res.render('error', { message: 'Adatbázis hiba történt a listázás során.' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Hiba történt az adatok betöltésekor');
     }
 });
 
-router.get('/add', ensureAdmin, (req, res) => {
-    res.render('crud/enekes_form', { 
-        title: 'Új énekes hozzáadása', 
-        enekes: {}, 
-        error: null 
-    });
+// --- ÚJ ÉNEKES FORM MEGJELENÍTÉSE ---
+router.get('/add', (req, res) => {
+    // Csak admin érheti el
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/crud');
+    }
+    res.render('crud/enekes_form', { enekes: {}, error: null });
 });
 
-router.post('/add', ensureAdmin, async (req, res) => {
-    const { nev, szulev } = req.body;
-    try {
-        const lastEnekes = await Enekes.findOne().sort({ originalId: -1 });
-        const newOriginalId = (lastEnekes ? lastEnekes.originalId : 0) + 1;
+// --- ÚJ ÉNEKES MENTÉSE (ITT VOLT A HIBA) ---
+router.post('/add', async (req, res) => {
+    // Csak admin
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/crud');
+    }
 
-        await Enekes.create({ 
-            originalId: newOriginalId,
-            nev: nev, 
-            szulev: parseInt(szulev) 
-        });
+    try {
+        const { nev, szulev } = req.body;
+
+        // 1. Megkeressük a legnagyobb ID-t az adatbázisban
+        const lastEnekes = await Enekes.findOne().sort({ id: -1 });
         
-        req.session.messages = ['Új énekes sikeresen hozzáadva.'];
-        res.redirect('/crud');
-    } catch (error) {
-        console.error(error);
+        // 2. Ha van, hozzáadunk egyet, ha nincs (üres db), akkor 1 lesz az ID
+        const newId = lastEnekes && lastEnekes.id ? lastEnekes.id + 1 : 1;
+
+        // 3. Létrehozás az ÚJ ID-val
+        await Enekes.create({
+            id: newId,  // EZ HIÁNYZOTT EDDIG!
+            nev,
+            szulev
+        });
+
+        res.redirect('/crud?msg=Sikeres hozzáadás!');
+    } catch (err) {
+        console.error(err);
+        // Ha hiba van, visszaküldjük az űrlapot a hibaüzenettel
         res.render('crud/enekes_form', { 
-            title: 'Új énekes hozzáadása', 
-            enekes: req.body, 
-            error: 'Adatbázis hiba történt a beszúrás során.' 
+            enekes: { nev: req.body.nev, szulev: req.body.szulev }, 
+            error: 'Adatbázis hiba történt a beszúrás során: ' + err.message 
         });
     }
 });
 
-router.get('/edit/:id', ensureAdmin, async (req, res) => {
-    try {
-        const enekes = await Enekes.findById(req.params.id).lean(); 
-        if (!enekes) {
-            return res.status(404).send('Énekes nem található.');
-        }
-        res.render('crud/enekes_form', { title: 'Énekes szerkesztése', enekes: enekes, error: null });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Hiba a szerkesztő űrlap betöltésekor.');
+// --- SZERKESZTÉS FORM MEGJELENÍTÉSE ---
+router.get('/edit/:id', async (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/crud');
     }
-});
 
-router.post('/edit/:id', ensureAdmin, async (req, res) => {
-    const { id } = req.params;
-    const { nev, szulev } = req.body;
     try {
-        await Enekes.findByIdAndUpdate(id, { 
-            nev: nev, 
-            szulev: parseInt(szulev) 
-        });
-        
-        req.session.messages = ['Énekes sikeresen frissítve.'];
+        // Fontos: Itt a MongoDB _id-t használjuk a kereséshez (az URL-ből)
+        const enekes = await Enekes.findById(req.params.id);
+        res.render('crud/enekes_form', { enekes, error: null });
+    } catch (err) {
+        console.error(err);
         res.redirect('/crud');
-    } catch (error) {
-        console.error(error);
-        res.render('crud/enekes_form', { 
-            title: 'Énekes szerkesztése', 
-            enekes: { _id: id, nev, szulev }, 
-            error: 'Adatbázis hiba történt a frissítés során.' 
-        });
     }
 });
 
-router.post('/delete/:id', ensureAdmin, async (req, res) => {
+// --- SZERKESZTÉS MENTÉSE ---
+router.post('/edit/:id', async (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/crud');
+    }
+
     try {
-        const deletedEnekes = await Enekes.findByIdAndDelete(req.params.id);
-        
-        if(deletedEnekes) {
-            await Repertoar.deleteMany({ enekesid: deletedEnekes.originalId });
-        }
-        
-        req.session.messages = ['Énekes sikeresen törölve.'];
-        res.redirect('/crud');
-    } catch (error) {
-        console.error(error);
-        req.session.messages = ['Hiba történt a törlés során.'];
+        const { nev, szulev } = req.body;
+        await Enekes.findByIdAndUpdate(req.params.id, { nev, szulev });
+        res.redirect('/crud?msg=Sikeres módosítás!');
+    } catch (err) {
+        console.error(err);
+        const enekes = { _id: req.params.id, nev: req.body.nev, szulev: req.body.szulev };
+        res.render('crud/enekes_form', { enekes, error: 'Hiba a mentéskor' });
+    }
+});
+
+// --- TÖRLÉS ---
+router.post('/delete/:id', async (req, res) => {
+    if (!req.session.user || req.session.user.role !== 'admin') {
+        return res.redirect('/crud');
+    }
+
+    try {
+        await Enekes.findByIdAndDelete(req.params.id);
+        res.redirect('/crud?msg=Sikeres törlés!');
+    } catch (err) {
+        console.error(err);
         res.redirect('/crud');
     }
 });
