@@ -4,7 +4,11 @@ const messageSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
     message: { type: String, required: true },
-    created_at: { type: Date, default: Date.now }
+    created_at: { type: Date, default: Date.now },
+
+    sender_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    reply: { type: String, default: null },
+    replied_at: { type: Date, default: null }
 });
 
 module.exports = mongoose.model('Message', messageSchema, 'messages');

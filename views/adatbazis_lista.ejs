@@ -66,35 +66,28 @@
 
 <script>
 function filterRepertoar() {
-    // 1. Keresett szöveg lekérése (kisbetűssé alakítva)
     const input = document.getElementById('repertoarSearch');
     const filter = input.value.toLowerCase();
     
-    // 2. Az összes kártya lekérése
     const cards = document.getElementsByClassName('repertoar-card');
     let hasVisibleCard = false;
 
-    // 3. Végigmegyünk minden kártyán
     for (let i = 0; i < cards.length; i++) {
         const card = cards[i];
-        // Megkeressük a nevet a kártyán belül
         const nameElement = card.getElementsByClassName('enekes-name')[0];
         
         if (nameElement) {
             const txtValue = nameElement.textContent || nameElement.innerText;
             
-            // Ha a névben benne van a keresett szöveg -> MEGJELENÍTÉS
             if (txtValue.toLowerCase().indexOf(filter) > -1) {
                 card.style.display = "";
                 hasVisibleCard = true;
             } else {
-                // Ha nincs benne -> ELREJTÉS
                 card.style.display = "none";
             }
         }
     }
 
-    // 4. "Nincs találat" üzenet kezelése
     const noResultMsg = document.getElementById('no-result');
     if (!hasVisibleCard) {
         noResultMsg.style.display = "block";

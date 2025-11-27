@@ -13,14 +13,12 @@
         <script>
             const toast = document.getElementById('toast-box');
             if (toast) {
-                // 1. URL tisztítása (hogy frissítéskor ne jöjjön vissza)
                 if (window.history.replaceState) {
                     const url = new URL(window.location);
                     url.searchParams.delete('msg');
                     window.history.replaceState(null, '', url);
                 }
 
-                // 2. Időzített eltüntetés
                 setTimeout(() => {
                     closeToast();
                 }, 3000);

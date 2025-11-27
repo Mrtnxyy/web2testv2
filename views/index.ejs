@@ -85,18 +85,15 @@
     </div>
 
     <script>
-        // 1. Doboz megkeresése
         const toast = document.getElementById('toast-box');
         
         if (toast) {
-            // 2. URL törlése (hogy frissítésnél ne jöjjön vissza)
             if (window.history.replaceState) {
                 const url = new URL(window.location);
                 url.searchParams.delete('msg');
                 window.history.replaceState(null, '', url);
             }
 
-            // 3. Időzített eltüntetés
             setTimeout(() => {
                 closeToast();
             }, 3000);

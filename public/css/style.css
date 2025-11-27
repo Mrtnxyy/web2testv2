@@ -54,8 +54,10 @@ h1, h2, h3 {
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 20px;
+  gap: 25px;
   align-items: center;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-links li {
@@ -67,8 +69,8 @@ h1, h2, h3 {
 .nav-links li a {
   color: var(--text-light);
   text-decoration: none;
-  font-weight: 400;
-  font-size: 0.95rem;
+  font-weight: 500;
+  font-size: 1rem;
   transition: color 0.3s ease;
   display: inline-block;
 }
@@ -440,7 +442,6 @@ footer {
   width: 100%;
 }
 
-/* --- JAVÍTOTT MENÜ (STABIL) --- */
 .profile-dropdown {
   position: relative;
   cursor: pointer;
@@ -486,12 +487,9 @@ footer {
   border: 1px solid var(--gold);
   border-radius: 4px;
   overflow: hidden;
-  
-  /* EZ RENDEZI EGYMÁS ALÁ ŐKET */
   flex-direction: column;
 }
 
-/* Hover esetén FLEX-ként jelenjen meg, ne BLOCK-ként */
 .profile-dropdown:hover .profile-dropdown-content {
   display: flex;
 }
@@ -530,7 +528,6 @@ footer {
   text-align: center;
 }
 
-/* Padding-left KIVÉVE, hogy ne ugráljon */
 .profile-dropdown-content a:hover {
   background-color: var(--gold);
   color: var(--dark-bg) !important;
@@ -840,4 +837,12 @@ input:disabled + .slider {
     opacity: 0.4;
     cursor: not-allowed;
     background-color: #2ecc71;
+}
+
+.msg-answered {
+    border-left: 5px solid #2ecc71 !important;
+}
+
+.msg-pending {
+    border-left: 5px solid #d4af37 !important;
 }

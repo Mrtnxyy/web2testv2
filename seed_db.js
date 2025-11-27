@@ -7,7 +7,6 @@ const Enekes = require('./models/Enekes');
 const Mu = require('./models/Mu');
 const Szerep = require('./models/Szerep');
 const Repertoar = require('./models/Repertoar');
-const User = require('./models/User');
 
 const dataFiles = [
     { file: 'enekes.txt', model: Enekes, fields: ['id', 'nev', 'szulev'] },
@@ -17,38 +16,47 @@ const dataFiles = [
 ];
 
 function parseFile(filePath, fields) {
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    const lines = fileContent.trim().split('\n').slice(1);
-    
-    return lines.map(line => {
-        const values = line.split(';').map(v => v.trim());
-        const doc = {};
+    try {
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        const lines = fileContent.trim().split('\n').slice(1).filter(l => l.trim() !== '' && !l.includes('[source'));
         
-        fields.forEach((field, index) => {
-            let val = values[index];
+        return lines.map(line => {
+            const values = line.split(';').map(v => v.trim().replace('\r', ''));
+            const doc = {};
             
-            const docField = (field === 'id') ? 'originalId' : field;
-            
-            if (docField.endsWith('id') || docField === 'szulev' || docField === 'utoljara' || docField === 'muid') {
-                doc[docField] = parseInt(val) || 0;
-            } else {
-                doc[docField] = val;
-            }
+            fields.forEach((field, index) => {
+                let val = values[index];
+
+                const docField = field; 
+
+                if (docField === 'id' || docField.endsWith('id') || docField === 'szulev' || docField === 'utoljara' || docField === 'muid') {
+                    doc[docField] = parseInt(val) || 0;
+                } else {
+                    doc[docField] = val;
+                }
+            });
+            return doc;
         });
-        return doc;
-    });
+    } catch (err) {
+        console.error(`Hiba a fájl olvasásakor (${filePath}):`, err.message);
+        return [];
+    }
 }
 
 async function seedDatabase() {
-    if (!process.env.MONGO_URI) {
-        console.error('KRITIKUS HIBA: MONGO_URI környezeti változó hiányzik!');
+    const connectionString = process.env.MONGO_URI;
+
+    if (!connectionString) {
+        console.error('KRITIKUS HIBA: Nincs megadva adatbázis elérési útvonal (MONGO_URI)!');
+        console.error('Ha helyben futtatod, ellenőrizd a .env fájlt.');
         process.exit(1);
     }
     
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB Csatlakozás sikeres, feltöltés indul...');
-    
     try {
+        console.log('Csatlakozás a MongoDB-hez...');
+        await mongoose.connect(connectionString);
+        console.log('✅ Sikeres csatlakozás!');
+    
         console.log('Régi adatok törlése...');
         await Promise.all([
             Enekes.deleteMany({}),
@@ -56,25 +64,36 @@ async function seedDatabase() {
             Szerep.deleteMany({}),
             Repertoar.deleteMany({}),
         ]);
+        console.log('Adatbázis kitakarítva.');
 
+        console.log('Új adatok betöltése...');
         for (const data of dataFiles) {
             const filePath = path.join(__dirname, 'data', data.file);
-            console.log(`Feltöltés indítása: ${data.file}`);
             
-            const documents = parseFile(filePath, data.fields);
+            if (fs.existsSync(filePath)) {
+                const documents = parseFile(filePath, data.fields);
 
-            await data.model.insertMany(documents);
-            
-            console.log(`[Sikeres]: ${data.model.collection.collectionName} - ${documents.length} dokumentum beszúrva.`);
+                if (documents.length > 0) {
+                    await data.model.insertMany(documents);
+                    console.log(`   -> [Sikeres]: ${data.file} (${documents.length} db sor)`);
+                } else {
+                    console.log(`   -> [Figyelem]: ${data.file} üres vagy nem olvasható.`);
+                }
+            } else {
+                console.error(`   -> [HIBA]: A fájl nem található: ${filePath}`);
+            }
         }
+
+        console.log('\n=========================================');
+        console.log('   🎉 ADATBÁZIS SIKERESEN FRISSÍTVE!');
+        console.log('=========================================');
 
     } catch (error) {
         console.error('\n!!! KRITIKUS HIBA A FELTÖLTÉS SORÁN !!!');
-        console.error('Ennek oka lehet duplikált originalId, érvénytelen adat, vagy hiba a modellekben.');
-        console.error(error.message);
+        console.error(error);
     } finally {
         mongoose.connection.close();
-        console.log('Adatbázis feltöltési szkript befejeződött.');
+        process.exit();
     }
 }
 

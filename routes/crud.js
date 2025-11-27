@@ -2,16 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Enekes = require('../models/Enekes');
 
-// --- LISTÁZÁS (EZT MOST MINDENKI LÁTHATJA - Nincs Admin ellenőrzés) ---
 router.get('/', async (req, res) => {
     try {
-        // Énekesek lekérése ABC sorrendben
         const enekesek = await Enekes.find().sort({ nev: 1 });
-        
-        // Flash üzenetek kezelése
+
         const messages = req.query.msg ? [req.query.msg] : [];
-        
-        // Átadjuk a user-t, hogy a nézet (EJS) tudja, kell-e gombokat mutatni
+
         res.render('crud/enekes_list', { 
             enekesek, 
             messages, 
@@ -23,7 +19,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// --- ÚJ FORM MEGJELENÍTÉSE (CSAK ADMIN) ---
 router.get('/add', (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.redirect('/crud');
@@ -31,7 +26,6 @@ router.get('/add', (req, res) => {
     res.render('crud/enekes_form', { enekes: {}, error: null });
 });
 
-// --- ÚJ ÉNEKES MENTÉSE (CSAK ADMIN + AUTO ID) ---
 router.post('/add', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.redirect('/crud');
@@ -39,8 +33,6 @@ router.post('/add', async (req, res) => {
 
     try {
         const { nev, szulev } = req.body;
-
-        // Automatikus ID generálás
         const lastEnekes = await Enekes.findOne().sort({ id: -1 });
         const newId = lastEnekes && lastEnekes.id ? lastEnekes.id + 1 : 1;
 
@@ -60,14 +52,12 @@ router.post('/add', async (req, res) => {
     }
 });
 
-// --- SZERKESZTÉS FORM (CSAK ADMIN) ---
 router.get('/edit/:id', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.redirect('/crud');
     }
 
     try {
-        // MongoDB _id alapján keresünk
         const enekes = await Enekes.findById(req.params.id);
         res.render('crud/enekes_form', { enekes, error: null });
     } catch (err) {
@@ -76,7 +66,6 @@ router.get('/edit/:id', async (req, res) => {
     }
 });
 
-// --- SZERKESZTÉS MENTÉSE (CSAK ADMIN) ---
 router.post('/edit/:id', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.redirect('/crud');
@@ -93,7 +82,6 @@ router.post('/edit/:id', async (req, res) => {
     }
 });
 
-// --- TÖRLÉS (CSAK ADMIN) ---
 router.post('/delete/:id', async (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.redirect('/crud');

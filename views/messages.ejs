@@ -1,5 +1,7 @@
 <div class="crud-container">
-    <h1 class="page-title">Beérkezett Üzenetek</h1>
+    <h1 class="page-title">
+        <%= user.role === 'admin' ? 'Beérkezett Üzenetek' : 'Saját Üzeneteim' %>
+    </h1>
 
     <% if (typeof successMsg !== 'undefined' && successMsg) { %>
         <div id="toast-box" class="toast-notification">
@@ -8,7 +10,6 @@
             </span>
             <button class="toast-close" onclick="closeToast()">×</button>
         </div>
-        
         <script>
             const toast = document.getElementById('toast-box');
             if (toast) {
@@ -21,29 +22,28 @@
             }
             function closeToast() {
                 const t = document.getElementById('toast-box');
-                if (t) {
-                    t.classList.add('fade-out');
-                    setTimeout(() => { t.remove(); }, 500);
-                }
+                if (t) { t.classList.add('fade-out'); setTimeout(() => { t.remove(); }, 500); }
             }
         </script>
     <% } %>
 
     <% if (messages && messages.length > 0) { %>
-        <div class="grid-container" style="justify-content: flex-start;">
+        <div class="grid-container" style="justify-content: center; flex-direction: column; align-items: center;">
             
             <% messages.forEach(msg => { %>
-                <div class="card" style="width: 100%; max-width: 100%; text-align: left; margin-bottom: 20px; position: relative;">
+                
+                <div class="card <%= msg.reply ? 'msg-answered' : 'msg-pending' %>" 
+                     style="width: 100%; max-width: 800px; text-align: left; margin-bottom: 20px; position: relative;">
                     
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 15px;">
                         <div>
-                            <h3 style="margin: 0; font-size: 1.2rem;"><%= msg.name %></h3>
-                            <small style="color: #888;"><%= new Date(msg.created_at).toLocaleDateString() %></small>
+                            <h3 style="margin: 0; font-size: 1.2rem; color: #fff;"><%= msg.name %></h3>
+                            <small style="color: #888;"><%= new Date(msg.created_at).toLocaleString() %></small>
                         </div>
 
-                        <form action="/messages/delete/<%= msg._id %>" method="POST" style="margin:0; padding:0; background:transparent; border:none; box-shadow:none;">
+                        <form action="/messages/delete/<%= msg._id %>" method="POST" style="margin:0;">
                             <button type="submit" class="action-button" 
-                                    onclick="return confirm('Biztosan törölni szeretnéd ezt az üzenetet?')"
+                                    onclick="return confirm('Biztosan törölni szeretnéd?')"
                                     style="background-color: rgba(100, 0, 0, 0.6); color: #ff9999; border: 1px solid #ff4d4d; min-width: auto; padding: 5px 10px; font-size: 0.8rem;">
                                 Törlés
                             </button>
@@ -51,9 +51,39 @@
                     </div>
                     
                     <p style="color: #d4af37; font-size: 0.9rem; margin-bottom: 5px;">Email: <%= msg.email %></p>
-                    <p style="color: #ddd; line-height: 1.6; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 4px;">
+                    
+                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 4px; margin-bottom: 15px; color: #ddd;">
                         "<%= msg.message %>"
-                    </p>
+                    </div>
+
+                    <% if (user.role === 'admin') { %>
+                        
+                        <form action="/messages/reply/<%= msg._id %>" method="POST" style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #444;">
+                            <label style="color: #2ecc71; font-weight: bold; display: block; margin-bottom: 5px;">
+                                <%= msg.reply ? 'Válasz módosítása:' : 'Válasz írása:' %>
+                            </label>
+                            <textarea name="replyText" rows="3" style="width:100%; margin-bottom: 10px;" required><%= msg.reply || '' %></textarea>
+                            <button type="submit" class="add-new-btn" style="width: auto; display: inline-block; padding: 8px 20px; font-size: 0.9rem;">
+                                Küldés
+                            </button>
+                        </form>
+
+                    <% } else { %>
+                        
+                        <% if (msg.reply) { %>
+                            <div style="margin-top: 15px; padding: 15px; background: rgba(46, 204, 113, 0.1); border-left: 3px solid #2ecc71; border-radius: 0 4px 4px 0;">
+                                <strong style="color: #2ecc71; display: block; margin-bottom: 5px;">Admin válasza:</strong>
+                                <p style="color: #fff; margin: 0;"><%= msg.reply %></p>
+                                <small style="color: #888; display: block; margin-top: 5px;">
+                                    <%= msg.replied_at ? new Date(msg.replied_at).toLocaleString() : '' %>
+                                </small>
+                            </div>
+                        <% } else { %>
+                            <p style="color: #666; font-style: italic; margin-top: 10px;">Még nem érkezett válasz.</p>
+                        <% } %>
+
+                    <% } %>
+
                 </div>
             <% }) %>
 
