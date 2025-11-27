@@ -7,13 +7,6 @@
         Lépjen be a klasszikus zene legmagasztosabb világába. 
         Fedezze fel a halhatatlan műveket, a legendás szerepeket és az énekesek repertoárját.
       </p>
-      
-      <% if (typeof successMsg !== 'undefined' && successMsg) { %>
-        <div style="background: #d4af37; color: #000; padding: 15px; border-radius: 5px; margin-bottom: 20px; font-weight: bold;">
-            <%= successMsg %>
-        </div>
-      <% } %>
-
       <% if (!user) { %>
         <a href="/auth/register" class="cta-button">Csatlakozzon a közönséghez</a>
       <% } else { %>
@@ -73,9 +66,7 @@
 
                 <div class="form-group">
                     <label for="contact-message">Üzenet</label>
-                    <textarea id="contact-message" name="message" rows="5" 
-                              style="width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid #444; color: #fff; border-radius: 4px;" 
-                              placeholder="Írja le véleményét vagy kérdését..." required></textarea>
+                    <textarea id="contact-message" name="message" rows="5" placeholder="Írja le véleményét vagy kérdését..." required></textarea>
                 </div>
 
                 <button type="submit" class="btn-submit">Üzenet küldése</button>
@@ -84,3 +75,31 @@
         </div>
     </div>
 </section>
+
+<% if (typeof successMsg !== 'undefined' && successMsg) { %>
+    <div id="toast-box" class="toast-notification">
+        <span style="font-weight: 600; font-family: 'Poppins', sans-serif;">
+            ✅ <%= successMsg %>
+        </span>
+        <button class="toast-close" onclick="closeToast()">×</button>
+    </div>
+
+    <script>
+        const toast = document.getElementById('toast-box');
+        if (toast) {
+            setTimeout(() => {
+                closeToast();
+            }, 3000);
+        }
+
+        function closeToast() {
+            const t = document.getElementById('toast-box');
+            if (t) {
+                t.classList.add('fade-out');
+                setTimeout(() => {
+                    t.remove();
+                }, 500);
+            }
+        }
+    </script>
+<% } %>

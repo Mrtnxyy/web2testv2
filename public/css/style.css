@@ -1,4 +1,3 @@
-/* --- ALAP BEÁLLÍTÁSOK --- */
 * {
   margin: 0;
   padding: 0;
@@ -6,10 +5,10 @@
 }
 
 :root {
-  --gold: #d4af37;        /* Elegáns arany szín */
+  --gold: #d4af37;
   --gold-hover: #b5952f;
-  --dark-bg: #0b0b15;     /* Nagyon sötét éjkék/fekete */
-  --dark-panel: #161625;  /* Kicsit világosabb panel háttér */
+  --dark-bg: #0b0b15;
+  --dark-panel: #161625;
   --text-light: #f4f4f4;
   --text-muted: #b0b0b0;
   --error-red: #ff4d4d;
@@ -27,7 +26,6 @@ h1, h2, h3 {
   font-family: 'Playfair Display', serif;
 }
 
-/* --- NAVBAR --- */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -79,7 +77,6 @@ h1, h2, h3 {
   color: var(--dark-bg) !important;
 }
 
-/* --- HERO SECTION --- */
 .main-content-container {
   width: 100%;
   max-width: 100%;
@@ -94,10 +91,7 @@ h1, h2, h3 {
   align-items: center;
   justify-content: center;
   text-align: center;
-  
-  /* BIZTONSÁGI GRADIENS (Nem okoz hibát, szép vörös/fekete) */
   background: radial-gradient(circle at center, #520808 0%, #0b0b15 80%);
-  
   margin-bottom: 0;
 }
 
@@ -152,7 +146,6 @@ h1, h2, h3 {
   box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
 }
 
-/* --- KÁRTYÁK (INTRO) --- */
 .intro-section {
   padding: 80px 20px;
   background-color: var(--dark-bg);
@@ -207,12 +200,11 @@ h1, h2, h3 {
   margin-bottom: 15px;
 }
 
-/* --- AUTH (LOGIN / REGISTER) STÍLUSOK --- */
 .auth-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 80vh; /* Teljes képernyő közepe */
+    min-height: 80vh;
     padding: 20px;
 }
 
@@ -246,7 +238,6 @@ h1, h2, h3 {
     font-size: 0.9rem;
 }
 
-/* Form elemek specifikusan az Auth kártyához */
 .auth-card form {
     margin: 0;
     padding: 0;
@@ -326,15 +317,12 @@ h1, h2, h3 {
     color: #fff;
 }
 
-/* --- TÁBLÁZATOK ÉS BELSŐ OLDALAK (CRUD) --- */
-
 .crud-container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
 }
 
-/* A cím középre igazítása */
 .page-title {
   text-align: center;
   color: var(--gold);
@@ -343,16 +331,14 @@ h1, h2, h3 {
   text-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 
-/* A vezérlők (Keresés + Gomb) doboza */
 .crud-controls {
-  max-width: 500px;       /* Ennyi a szélessége a doboznak */
-  margin: 0 auto 40px auto; /* Középre igazítás */
+  max-width: 500px;
+  margin: 0 auto 40px auto;
   display: flex;
-  flex-direction: column; /* Egymás alá */
-  gap: 15px;              /* Távolság */
+  flex-direction: column;
+  gap: 15px;
 }
 
-/* Keresőmező */
 .search-input {
   width: 100%;
   padding: 12px 15px;
@@ -369,7 +355,6 @@ h1, h2, h3 {
   background-color: rgba(212, 175, 55, 0.1);
 }
 
-/* "Új hozzáadása" gomb */
 .add-new-btn {
   display: block;
   width: 100%;
@@ -384,7 +369,7 @@ h1, h2, h3 {
   letter-spacing: 1px;
   transition: 0.3s;
   border: none;
-  box-sizing: border-box; /* Hogy a padding ne nyomja szét */
+  box-sizing: border-box;
 }
 
 .add-new-btn:hover {
@@ -393,7 +378,6 @@ h1, h2, h3 {
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
 }
 
-/* Mégsem gomb (szürke) */
 .btn-cancel {
     display: inline-block;
     margin-top: 15px;
@@ -408,7 +392,6 @@ h1, h2, h3 {
     border-bottom-color: #fff;
 }
 
-/* Táblázat csinosítás */
 table {
     width: 100%;
     margin-top: 20px;
@@ -435,7 +418,6 @@ table td {
     padding: 15px;
 }
 
-/* --- FOOTER --- */
 footer {
   background-color: #050508;
   padding: 20px;
@@ -445,7 +427,6 @@ footer {
   text-align: center;
 }
 
-/* --- DROPDOWN (PROFIL MENÜ) --- */
 .profile-dropdown {
   position: relative;
   cursor: pointer;
@@ -487,7 +468,6 @@ footer {
   display: block;
 }
 
-/* Fejléc rész (Admin név) */
 .profile-info {
   padding: 15px;
   border-bottom: 1px solid rgba(212, 175, 55, 0.3);
@@ -510,7 +490,6 @@ footer {
   letter-spacing: 1px;
 }
 
-/* Menüpontok */
 .profile-dropdown-content a {
   padding: 12px 20px;
   display: block;
@@ -520,14 +499,12 @@ footer {
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Menüpont hover - SÖTÉT SZÖVEGGEL */
 .profile-dropdown-content a:hover {
   background-color: var(--gold);
   color: var(--dark-bg) !important;
   padding-left: 25px;
 }
 
-/* Animáció */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -539,14 +516,9 @@ footer {
   .auth-card { width: 90%; }
 }
 
-/* ========================================= */
-/* --- VÉGSŐ JAVÍTÁSOK (Inputok & Gombok) --- */
-/* ========================================= */
-
-/* 1. Hogy az "Új énekes" gomb szövege FEKETE legyen és olvasható */
 .add-new-btn {
     background-color: var(--gold) !important;
-    color: #000 !important; /* Fekete szöveg a sárga gombom */
+    color: #000 !important;
     font-weight: bold;
     border: 1px solid var(--gold);
     padding: 12px;
@@ -561,7 +533,6 @@ footer {
     color: #000 !important;
 }
 
-/* 2. Hogy az Input mezők (kereső, szerkesztő) szövege FEHÉR legyen és látható */
 input[type="text"],
 input[type="number"],
 input[type="email"],
@@ -569,9 +540,9 @@ input[type="password"],
 .search-input {
     width: 100%;
     padding: 12px;
-    background-color: rgba(255, 255, 255, 0.1) !important; /* Enyhén átlátszó háttér */
-    border: 1px solid var(--gold) !important; /* Arany keret */
-    color: #fff !important; /* Fehér betű */
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid var(--gold) !important;
+    color: #fff !important;
     border-radius: 4px;
     box-sizing: border-box;
 }
@@ -582,16 +553,11 @@ input:focus {
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
-/* ========================================= */
-/* --- TÁBLÁZAT GOMBOK (Szerkesztés & Törlés) --- */
-/* ========================================= */
-
-/* Közös alap beállítások a gombokhoz */
 table .action-button {
-    padding: 6px 15px;      /* Kicsit kisebb padding, hogy elférjen */
-    font-weight: 700;       /* Vastag betű */
+    padding: 6px 15px;
+    font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.75rem;     /* Kisebb betűméret */
+    font-size: 0.75rem;
     border-radius: 4px;
     text-decoration: none;
     transition: all 0.3s ease;
@@ -600,53 +566,46 @@ table .action-button {
     align-items: center;
     justify-content: center;
     letter-spacing: 1px;
-    min-width: 100px;       /* Egyforma szélesek legyenek */
+    min-width: 100px;
 }
 
-/* 1. SZERKESZTÉS GOMB (Arany - Mint a fenti nagy gomb) */
-/* Ez az <a> tag a táblázatban */
 table td a.action-button {
     background-color: var(--gold) !important;
-    color: #0b0b15 !important; /* Fekete/Sötét szöveg */
+    color: #0b0b15 !important;
     border: 1px solid var(--gold);
 }
 
 table td a.action-button:hover {
-    background-color: #fff !important; /* Fehérre vált, ha ráviszed az egeret */
+    background-color: #fff !important;
     border-color: #fff;
     transform: translateY(-2px);
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 
-/* 2. TÖRLÉS GOMB (Elegáns Vörös) */
-/* Ez a <button> tag a formban */
 table td form button.action-button {
-    background-color: rgba(100, 0, 0, 0.6) !important; /* Átlátszó sötétvörös */
-    color: #ff9999 !important; /* Halvány vörös szöveg */
+    background-color: rgba(100, 0, 0, 0.6) !important;
+    color: #ff9999 !important;
     border: 1px solid #ff4d4d !important;
-    margin-left: 8px; /* Kis távolság a szerkesztéstől */
+    margin-left: 8px;
 }
 
 table td form button.action-button:hover {
-    background-color: #ff3333 !important; /* Élénk vörös hover */
-    color: #fff !important; /* Fehér szöveg */
+    background-color: #ff3333 !important;
+    color: #fff !important;
     border-color: #ff3333 !important;
     box-shadow: 0 0 10px rgba(255, 50, 50, 0.6);
 }
 
-/* ========================================= */
-/* --- ÜZENET (TEXTAREA) STÍLUS (Kapcsolat űrlaphoz) --- */
-/* ========================================= */
 textarea {
     width: 100%;
     padding: 12px;
-    background-color: rgba(255, 255, 255, 0.1) !important; /* Átlátszóbb háttér */
-    border: 1px solid var(--gold) !important; /* Arany keret */
-    color: #fff !important; /* Fehér betű */
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid var(--gold) !important;
+    color: #fff !important;
     border-radius: 4px;
-    font-family: 'Poppins', sans-serif; /* Ugyanaz a betűtípus */
+    font-family: 'Poppins', sans-serif;
     font-size: 1rem;
-    resize: vertical; /* Csak lefelé lehessen nagyítani */
+    resize: vertical;
     box-sizing: border-box;
 }
 
@@ -654,4 +613,53 @@ textarea:focus {
     outline: none;
     background-color: rgba(255, 255, 255, 0.2) !important;
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.toast-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #0b0b15;
+    color: #d4af37;
+    border: 1px solid #d4af37;
+    border-left: 5px solid #d4af37;
+    padding: 15px 20px;
+    border-radius: 4px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    z-index: 9999;
+    min-width: 300px;
+    animation: slideInRight 0.5s ease-out forwards;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.3s;
+}
+
+.toast-close:hover {
+    color: #ff4d4d;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(20px); }
 }
