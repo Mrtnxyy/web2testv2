@@ -20,7 +20,12 @@ mongoose.connect(process.env.MONGO_URI)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// --- FORM ADATOK KEZELÉSE ---
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// --- EZ A SOR HIÁNYZOTT! (Ez kell a csúszkához/JSON-hoz) ---
+app.use(express.json()); 
+
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
