@@ -6,8 +6,6 @@ const methodOverride = require('method-override');
 const path = require('path');
 const mongoose = require('mongoose');
 
-const Message = require('./models/Message'); 
-
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const messagesRouter = require('./routes/messages');
@@ -16,8 +14,8 @@ const crudRouter = require('./routes/crud');
 const app = express();
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB Csatlakozva!'))
-  .catch(err => console.log('❌ Adatbázis hiba:', err));
+  .then(() => console.log('MongoDB Csatlakozva!'))
+  .catch(err => console.log(err));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -32,29 +30,8 @@ app.use(session({
   saveUninitialized: false
 }));
 
-app.use(async (req, res, next) => {
+app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
-  
-  try {
-      if (req.session.user && req.session.user.role === 'admin') {
-          const count = await Message.countDocuments({ 
-              $or: [{ reply: null }, { reply: "" }] 
-          });
-          res.locals.unreadCount = count;
-      } else if (req.session.user) {
-          const count = await Message.countDocuments({ 
-              sender_id: req.session.user._id,
-              reply: { $ne: null }
-          });
-          res.locals.unreadCount = count;
-      } else {
-          res.locals.unreadCount = 0;
-      }
-  } catch (err) {
-      console.error("Számláló hiba:", err);
-      res.locals.unreadCount = 0;
-  }
-  
   next();
 });
 
