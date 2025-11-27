@@ -51,10 +51,10 @@
 
                             <td style="text-align: center;">
                                 <% const isMe = u.email === currentUser.email; %>
-
+                                
                                 <label class="switch">
                                     <input type="checkbox" 
-                                           onchange="toggleRole('<%= u._id %>', this)" 
+                                           onchange="toggleRole('<%= String(u._id) %>', this)" 
                                            <%= u.role === 'admin' ? 'checked' : '' %>
                                            <%= isMe ? 'disabled' : '' %>>
                                     <span class="slider round"></span>
@@ -78,8 +78,6 @@
         const newRole = checkbox.checked ? 'admin' : 'user';
         const roleText = document.getElementById('role-text-' + userId);
 
-        console.log("KÜLDÉS:", userId, newRole);
-
         try {
             const response = await fetch('/admin/toggle-role', {
                 method: 'POST',
@@ -98,7 +96,7 @@
                     roleText.className = 'role-user';
                 }
             } else {
-                alert('Hiba történt: ' + (result.error || 'Ismeretlen hiba'));
+                alert('Hiba: ' + (result.error || 'Ismeretlen hiba'));
                 checkbox.checked = !checkbox.checked;
             }
         } catch (error) {

@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 const Message = require('../models/Message');
 const User = require('../models/User');
 const Enekes = require('../models/Enekes');
@@ -91,17 +90,13 @@ router.post('/admin/toggle-role', async (req, res) => {
 
     let { userId, newRole } = req.body;
 
-    if (userId) userId = userId.trim();
+    userId = String(userId).trim();
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).json({ error: 'Érvénytelen ID formátum!' });
-        }
-
         const userToModify = await User.findById(userId);
-        
+
         if (!userToModify) {
-            return res.status(404).json({ error: 'Felhasználó nem található!' });
+            return res.status(404).json({ error: 'Felhasználó nem található (Hibás ID)!' });
         }
 
         if (userToModify.email === req.session.user.email) {
